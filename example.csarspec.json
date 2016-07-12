@@ -4,7 +4,7 @@
       "properties_schema": {
         "__comment": "properties are mapped to operations' input parameters; logs are default output of operations",
         "HTTPPort": {
-          "type": "xsd:string",
+          "type": "string",
           "default": "8080"
         }
       },
