@@ -1,0 +1,62 @@
+{
+  "node_types": {
+    "Apache": {
+      "properties_schema": {
+        "__comment": "map properties to input parameters for each operation; logs as output of operation",
+        "HTTPPort": {
+          "type": "xsd:string",
+          "default": "8080"
+        }
+      },
+      "operations": {
+        "__comment": "install, configure, start, stop, uninstall are lifecycle operations",
+        "install": [ "apache_install" ]
+      }
+    },
+    "MySQL": {
+      "operations": {
+        "install": [ "mysql_install" ]
+      }
+    }
+  },
+  "artifacts": {
+    "apache_install": {
+      "type": "WAR",
+      "properties": {
+        "InvocationType": "SOAP+HTTP"
+      },
+      "references": [
+        "http://some/remote/location/to/fetch/file.war",
+        "./some/local/path/to/file.war"
+      ]
+    },
+    "mysql_install": {
+      "type": "DockerCompose",
+      "references": [
+        "./mysql/docker-compose.yml"
+      ]
+    }
+  },
+  "topologies": {
+    "ProductionEnv": {
+      "nodes": {
+        "ApacheHTTPServer": {
+          "type": "Apache",
+          "properties": {
+            "HTTPPort": "8081"
+          },
+        },
+        "MySQLDBServer": {
+          "type": "MySQL"
+        }
+      },
+      "relationships": {
+        "ApacheConnectsToMySQL": {
+          "type": "connects_to",
+          "source": "ApacheHTTPServer",
+          "target": "MySQLDBServer"
+        }
+      }
+    }
+  }
+}
