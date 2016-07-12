@@ -1,0 +1,24 @@
+{
+  "name": "toscafy",
+  "version": "1.0.0",
+  "description": "Generate TOSCA CSARs from csarspec.json files",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/toscafy/toscafy.git"
+  },
+  "keywords": [
+    "TOSCA",
+    "CSAR"
+  ],
+  "author": "Johannes Wettinger <mail@jojow.de>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/toscafy/toscafy/issues"
+  },
+  "homepage": "https://github.com/toscafy/toscafy#readme",
+  "dependencies": {
+    "lodash": "^4.13.1"
+  }
+}

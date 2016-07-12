@@ -9,7 +9,6 @@
         }
       },
       "operations": {
-        "__comment": "install, configure, start, stop, uninstall are lifecycle operations",
         "install": [ "apache_install" ]
       }
     },
