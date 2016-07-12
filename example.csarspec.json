@@ -2,7 +2,7 @@
   "node_types": {
     "Apache": {
       "properties_schema": {
-        "__comment": "map properties to input parameters for each operation; logs as output of operation",
+        "__comment": "properties are mapped to operations' input parameters; logs are default output of operations",
         "HTTPPort": {
           "type": "xsd:string",
           "default": "8080"
