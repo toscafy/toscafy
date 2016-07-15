@@ -4,6 +4,9 @@
   "description": "Generate TOSCA CSARs from csarspec.json files",
   "main": "index.js",
   "scripts": {},
+  "bin": {
+    "toscafy": "bin/toscafy"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/toscafy/toscafy.git"
@@ -19,6 +22,14 @@
   },
   "homepage": "https://github.com/toscafy/toscafy#readme",
   "dependencies": {
-    "lodash": "^4.13.1"
+    "async": "^2.0.0",
+    "fs-extra": "^0.30.0",
+    "glob": "^7.0.5",
+    "ignore": "^3.1.3",
+    "lodash": "^4.13.1",
+    "prettify-xml": "^1.0.0",
+    "request": "^2.73.0",
+    "shortid": "^2.2.6",
+    "yargs": "^4.8.0"
   }
 }

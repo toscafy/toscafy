@@ -1,1 +1,43 @@
-// https://www.npmjs.com/package/yargs
+#!/usr/bin/env node
+
+'use strict';
+
+const fs = require('fs');
+const path = require('path');
+const Generator = require('../lib/Generator');
+
+const argv = require('yargs')
+  .usage('Usage: $0 [OPTIONS]') // PATH | URL | -
+  .example('$0 -o ../my-csar', 'Generate CSAR')
+
+  .alias('s', 'spec')
+  .describe('s', 'Path to CSAR spec')
+  .nargs('s', 1)
+
+  .alias('c', 'context')
+  //.default('c', process.cwd())
+  .describe('c', 'Set working dir as context')
+  .nargs('c', 1)
+
+  .alias('o', 'output')
+  .describe('o', 'Set output dir or file')
+  .nargs('o', 1)
+  .demand(['output'])
+
+  //.demand(1)
+  .help('h')
+  .alias('h', 'help')
+  //.epilog('copyright 2016')
+  .argv;
+
+
+
+argv.spec = argv.spec || path.join(process.cwd(), 'csarspec.json');
+
+Generator().generate(fs.readFileSync(argv.spec, 'utf8'), {
+  workingDir: argv.context || process.cwd(),
+  outputDir: argv.output
+}, (err) => {
+  if (err) console.error(err);
+  else console.log('done');
+});

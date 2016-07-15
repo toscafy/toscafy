@@ -2,7 +2,6 @@
   "node_types": {
     "Apache": {
       "properties_schema": {
-        "__comment": "properties are mapped to operations' input parameters; logs are default output of operations",
         "HTTPPort": {
           "type": "string",
           "default": "8080"
@@ -15,25 +14,30 @@
     "MySQL": {
       "operations": {
         "install": [ "mysql_install" ]
-      }
+      },
+      "deployment_artifacts": [ ]
     }
   },
   "artifacts": {
     "apache_install": {
       "type": "WAR",
       "properties": {
-        "InvocationType": "SOAP+HTTP"
+        "ServiceEndpoint": "/services/org_opentosca_NodeTypes_UbuntuPort",
+        "PortType": "{http://opentosca.org/NodeTypes}org_opentosca_NodeTypes_Ubuntu",
+        "InvocationType": "SOAP/HTTP"
       },
       "references": [
-        "http://some/remote/location/to/fetch/file.war",
+        { "$toscafy.fetch": "http://some/remote/location/to/fetch/file.war", "to": "file.war" },
         "./some/local/path/to/file.war"
       ]
     },
     "mysql_install": {
       "type": "DockerCompose",
-      "references": [
-        "./mysql/docker-compose.yml"
-      ]
+      "dockerComposeYml": "mysql/docker-compose.yml",
+      "context": "mysql/context.zip",
+      "serviceName": "mysql-mgmt-api",
+      "privatePort": "3000",
+      "urlPath": "/soap-endpoint"
     }
   },
   "topologies": {
@@ -43,7 +47,8 @@
           "type": "Apache",
           "properties": {
             "HTTPPort": "8081"
-          }
+          },
+          "deployment_artifacts": [ ]
         },
         "MySQLDBServer": {
           "type": "MySQL"

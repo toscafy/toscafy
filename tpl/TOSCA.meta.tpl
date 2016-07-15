@@ -9,8 +9,7 @@ Content-Type: application/vnd.oasis.tosca.definitions
 Name: properties.xsd
 Content-Type: text/xml
 
-Name: files/soap-service.war
+<% _.forEach(spec.files, function(file) { %>
+Name: <%= file %>
 Content-Type: application/octet-stream
-
-Name: files/configure.sh
-Content-Type: text/plain
+<% }); %>

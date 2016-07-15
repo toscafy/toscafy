@@ -1,158 +1,174 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tosca:Definitions xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" id="<%= csarId %>" targetNamespace="http://toscafy.github.io/generated/<%= csarId %>">
+<tosca:Definitions xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" id="<%= spec.csar_name %>" xmlns:tns="<%= spec.csar_namespace %>" targetNamespace="<%= spec.csar_namespace %>">
 
   <!-- ============== -->
   <!-- Artifact Types -->
   <!-- ============== -->
 
-  <tosca:ArtifactType name="ScriptArtifact" targetNamespace="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes"/>
-  <tosca:ArtifactType name="WAR" targetNamespace="http://www.example.com/ToscaTypes"/>
-  <tosca:ArtifactType name="DockerComposeArtifact" targetNamespace="http://toscafy.github.io/artifacttypes"/>
+  <% _.forEach(knownArtifactTypes, function(at) { %>
+  <tosca:ArtifactType name="<%= at.name %>" targetNamespace="<%= at.namespace %>"/>
+  <% }); %>
+
+  <% if (spec.artifact_types_xml) { %>
+  <%= spec.artifact_types_xml %>
+  <% } %>
 
   <!-- ================== -->
   <!-- Relationship Types -->
   <!-- ================== -->
 
-  <tosca:RelationshipType name="HostedOn" targetNamespace="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes"/>
-  <tosca:RelationshipType name="ConnectsTo" targetNamespace="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes"/>
+  <% _.forEach(knownRelationshipTypes, function(rt) { %>
+  <tosca:RelationshipType name="<%= rt.name %>" targetNamespace="<%= rt.name %>"/>
+  <% }); %>
+
+  <% if (spec.relationship_types_xml) { %>
+  <%= spec.relationship_types_xml %>
+  <% } %>
 
   <!-- ========== -->
   <!-- Node Types -->
   <!-- ========== -->
 
-  <tosca:Import namespace="http://toscafy.github.io/nodetypes" location="./properties.xsd" importType="http://www.w3.org/2001/XMLSchema"/>
+  <tosca:Import namespace="<%= spec.csar_namespace %>" location="./properties.xsd" importType="http://www.w3.org/2001/XMLSchema"/>
 
-  <% if (spec.node_types) _.forEach(spec.node_types), function(nt, ntName) { %>
-  <tosca:NodeType name="<%= ntName %>" targetNamespace="http://toscafy.github.io/nodetypes" xmlns:tns="http://toscafy.github.io/nodetypes">
-    <winery:PropertiesDefinition elementname="<%= ntName %>Properties" namespace="http://toscafy.github.io/nodetypes">
+  <% _.forEach(spec.node_types, function(nt, ntName) { %>
+  <tosca:NodeType name="<%= ntName %>">
+    <% if (!_.isEmpty(nt.properties_schema)) { %>
+    <winery:PropertiesDefinition elementname="<%= ntName %>Properties" namespace="<%= spec.csar_namespace %>">
+      <% _.forEach(nt.properties_schema, function(p, pName) { %>
       <winery:properties>
-        <winery:key>DBName</winery:key>
-        <winery:type>xsd:string</winery:type>
+        <winery:key><%= pName %></winery:key>
+        <winery:type><%= p.type %></winery:type>
       </winery:properties>
-      <winery:properties>
-        <winery:key>DBUser</winery:key>
-        <winery:type>xsd:string</winery:type>
-      </winery:properties>
-      <winery:properties>
-        <winery:key>DBPassword</winery:key>
-        <winery:type>xsd:string</winery:type>
-      </winery:properties>
+      <% }); %>
     </winery:PropertiesDefinition>
+    <% } %>
     <tosca:PropertiesDefinition type="tns:MySQLDBProperties"/>
+    <% if (!_.isEmpty(nt.interfaces)) { %>
     <tosca:Interfaces>
-      <tosca:Interface name="http://www.example.com/interfaces/lifecycle">
-        <tosca:Operation name="install">
+      <% _.forEach(nt.interfaces, function(iface, ifaceName) { %>
+      <tosca:Interface name="<%= ifaceName %>">
+        <% _.forEach(iface.operations, function(op, opName) { %>
+        <tosca:Operation name="<%= opName %>">
           <tosca:InputParameters>
-            <tosca:InputParameter name="DBName" type="xsd:string" required="yes"/>
-            <tosca:InputParameter name="DBUser" type="xsd:string" required="yes"/>
-            <tosca:InputParameter name="DBPassword" type="xsd:string" required="yes"/>
+            <% _.forEach(nt.properties_schema, function(p, pName) { %>
+            <tosca:InputParameter name="<%= pName %>" type="<%= p.type %>"/> <!-- required="yes" -->
+            <% }); %>
           </tosca:InputParameters>
+          <tosca:OutputParameters>
+            <tosca:OutputParameter name="logs" type="xsd:string"/>
+          </tosca:OutputParameters>
         </tosca:Operation>
-        <tosca:Operation name="configure">
-          <tosca:InputParameters>
-            <tosca:InputParameter name="DBName" type="xsd:string" required="yes"/>
-            <tosca:InputParameter name="DBUser" type="xsd:string" required="yes"/>
-            <tosca:InputParameter name="DBPassword" type="xsd:string" required="yes"/>
-          </tosca:InputParameters>
-        </tosca:Operation>
+        <% }); %>
       </tosca:Interface>
+      <% }); %>
     </tosca:Interfaces>
+    <% } %>
   </tosca:NodeType>
 
-  <tosca:NodeTypeImplementation xmlns:tns="http://toscafy.github.io/nodetypes" name="MySQL-DB_Impl" targetNamespace="http://toscafy.github.io/nodetypes" nodeType="tns:MySQL-DB">
+
+  <% if (nt.has_implementation_artifacts || !_.isEmpty(nt.deployment_artifacts)) { %>
+  <tosca:NodeTypeImplementation name="<%= ntName %>Impl" nodeType="tns:<%= ntName %>">
+    <% if (nt.has_implementation_artifacts) { %>
     <tosca:ImplementationArtifacts>
-      <tosca:ImplementationArtifact xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes" name="MySQL-DB-InstallIA" interfaceName="http://www.example.com/interfaces/lifecycle" operationName="install" artifactType="tbt:ScriptArtifact" artifactRef="tns:MySQL-DB-InstallIA"/>
-      <tosca:ImplementationArtifact xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes" name="MySQL-DB-ConfigureIA" interfaceName="http://www.example.com/interfaces/lifecycle" operationName="configure" artifactType="tbt:ScriptArtifact" artifactRef="tns:MySQL-DB-ConfigureIA"/>
+      <% _.forEach(nt.interfaces, function(iface, ifaceName) { %>
+      <% if (iface.implementation_artifacts) { %>
+      <% _.forEach(iface.implementation_artifacts, function(ia) { %>
+      <tosca:ImplementationArtifact xmlns:ia="<%= ia.namespace %>" name="IA-<%= ia.name %>" interfaceName="<%= ifaceName %>" artifactType="ia:<%= ia.type %>" artifactRef="tns:<%= ia.name %>"/>
+      <% }); %>
+      <% } %>
+      <% _.forEach(iface.operations, function(op, opName) { %>
+      <% if (op.implementation_artifacts) { %>
+      <% _.forEach(op.implementation_artifacts, function(ia) { %>
+      <tosca:ImplementationArtifact xmlns:ia="<%= ia.namespace %>" name="IA-<%= opName %>-<%= ia.name %>" interfaceName="<%= ifaceName %>" operationName="<%= opName %>" artifactType="ia:<%= ia.type %>" artifactRef="tns:<%= ia.name %>"/>
+      <% }); %>
+      <% } %>
+      <% }); %>
+      <% }); %>
     </tosca:ImplementationArtifacts>
+    <% } %>
+    <% if (!_.isEmpty(nt.deployment_artifacts)) { %>
+    <tosca:DeploymentArtifacts>
+      <% _.forEach(nt.deployment_artifacts, function(da) { %>
+      <tosca:DeploymentArtifact xmlns:da="<%= da.namespace %>" name="DA-<%= da.name %>" artifactType="da:<%= da.type %>" artifactRef="tns:<%= da.name %>"/>
+      <% }); %>
+    </tosca:DeploymentArtifacts>
+    <% } %>
   </tosca:NodeTypeImplementation>
+  <% } %>
   <% }); %>
 
   <!-- ================== -->
   <!-- Artifact Templates -->
   <!-- ================== -->
 
-  <tosca:ArtifactTemplate xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes" id="MySQL-DB-InstallIA" type="tbt:ScriptArtifact">
-    <tosca:ArtifactReferences>
-      <tosca:ArtifactReference reference="./files/install.sh"/>
-    </tosca:ArtifactReferences>
-  </tosca:ArtifactTemplate>
-
-  <tosca:ArtifactTemplate xmlns:extt2="http://www.example.com/ToscaTypes" id="Ubuntu-14.04-VM_OperatingSystemInterface_IA" type="extt2:WAR">
+  <% _.forEach(spec.artifacts, function(art, artName) { %>
+  <tosca:ArtifactTemplate xmlns:at="<%= art.namespace %>" xmlns="<%= art.namespace %>" id="<%= artName %>" type="at:<%= art.type %>">
+    <% if (!_.isEmpty(art.properties)) { %>
     <tosca:Properties>
+      <% if ('WAR' === art.type) { %>
       <ot:WSProperties xmlns:ot="http://www.uni-stuttgart.de/opentosca" xmlns="http://www.uni-stuttgart.de/opentosca">
-        <ServiceEndpoint>/services/org_opentosca_NodeTypes_UbuntuPort</ServiceEndpoint>
-        <PortType>{http://opentosca.org/NodeTypes}org_opentosca_NodeTypes_Ubuntu</PortType>
-        <InvocationType>SOAP/HTTP</InvocationType>
+        <% _.forEach(art.properties, function(pValue, pName) { %>
+        <<%= pName %>><%= pValue %></<%= pName %>>
+        <% }); %>
       </ot:WSProperties>
+      <% } else { %>
+      <% _.forEach(art.properties, function(pValue, pName) { %>
+      <<%= pName %>><%= pValue %></<%= pName %>>
+      <% }); %>
+      <% } %>
     </tosca:Properties>
+    <% } %>
+    <% if (_.includes(['ScriptArtifact', 'WAR'], art.type) && !_.isEmpty(art.references)) { %>
     <tosca:ArtifactReferences>
-      <tosca:ArtifactReference reference="./org_opentosca_NodeTypes_Ubuntu-14_04-VM__OperatingSystemInterface.war"/>
-      <tosca:ArtifactReference reference="./org_opentosca_NodeTypes_Ubuntu-14_04-VM__OperatingSystemInterface.zip"/>
+      <% _.forEach(art.references, function(ref) { %>
+      <tosca:ArtifactReference reference="<%= ref %>"/>
+      <% }); %>
     </tosca:ArtifactReferences>
+    <% } %>
+    <% _.forEach(art, function(value, name) { %>
+    <% if (!_.includes(['type', 'namespace', 'name', 'references', 'properties'], name)) { %>
+    <<%= pName %>><%= pValue %></<%= pName %>>
+    <% } %>
+    <% }); %>
   </tosca:ArtifactTemplate>
+  <% }); %>
 
   <!-- ============================ -->
   <!-- Service & Topology Templates -->
   <!-- ============================ -->
 
-  <tosca:ServiceTemplate id="MySQL-DB-ServiceTemplate" name="MySQL-DB-ServiceTemplate" targetNamespace="http://toscafy.github.io/servicetemplates" xmlns:tns="http://toscafy.github.io/nodetypes">
+  <% _.forEach(spec.topologies, function(top, topName) { %>
+  <tosca:ServiceTemplate id="<%= topName %>" name="<%= topName %>">
     <tosca:TopologyTemplate>
-      <tosca:NodeTemplate name="OpenStack-Liberty-12" minInstances="1" maxInstances="1" id="openstackCloudProvider" type="tns:OpenStack-Liberty-12">
+      <% _.forEach(top.nodes, function(n, nName) { %>
+      <tosca:NodeTemplate name="<%= nName %>" minInstances="1" maxInstances="1" id="<%= nName %>" type="tns:<%= n.type %>">
+        <% if (!_.isEmpty(n.properties)) { %>
         <tosca:Properties>
-          <tns:CloudProviderProperties xmlns="http://toscafy.github.io/nodetypes">
-            <tns:APIEndpoint>129.69.209.127</tns:APIEndpoint>
-            <tns:APIUser>openTOSCA.kalman</tns:APIUser>
-            <tns:APIPassword/>
-          </tns:CloudProviderProperties>
+          <tns:<%= n.type %>Properties xmlns="<%= spec.csar_namespace %>">
+            <% _.forEach(art.properties, function(pValue, pName) { %>
+            <<%= pName %>><%= pValue %></<%= pName %>>
+            <% }); %>
+          </tns:<%= n.type %>Properties>
         </tosca:Properties>
+        <% } %>
+        <% if (!_.isEmpty(nt.deployment_artifacts)) { %>
+        <tosca:DeploymentArtifacts>
+          <% _.forEach(n.deployment_artifacts, function(da) { %>
+          <tosca:DeploymentArtifact xmlns:da="<%= da.namespace %>" name="DA-<%= da.name %>" artifactType="da:<%= da.type %>" artifactRef="tns:<%= da.name %>"/>
+          <% }); %>
+        </tosca:DeploymentArtifacts>
+        <% } %>
       </tosca:NodeTemplate>
-      <tosca:NodeTemplate xmlns:tns="http://toscafy.github.io/nodetypes" name="Ubuntu-14.04-VM" minInstances="1" maxInstances="1" id="ubuntuVM" type="tns:Ubuntu-14.04-VM">
-        <tosca:Properties>
-          <tns:VirtualMachineProperties xmlns="http://toscafy.github.io/nodetypes">
-            <tns:InstanceId/>
-            <tns:IP/>
-            <tns:KeyPairName>KalleMarvinKey</tns:KeyPairName>
-            <tns:User>ubuntu</tns:User>
-            <tns:Password/>
-            <tns:SecurityGroup>default</tns:SecurityGroup>
-            <tns:Type>m1.medium</tns:Type>
-          </tns:VirtualMachineProperties>
-        </tosca:Properties>
-      </tosca:NodeTemplate>
-      <tosca:NodeTemplate xmlns:tns="http://toscafy.github.io/nodetypes" name="MySQL-DBMS-5.5" minInstances="1" maxInstances="1" id="mySqlDBMS" type="tns:MySQL-DBMS-5.5">
-        <tosca:Properties>
-          <tns:MySQLDBMSProperties xmlns="http://toscafy.github.io/nodetypes">
-            <tns:DBMSUser>kalle</tns:DBMSUser>
-            <tns:DBMSPassword>walle</tns:DBMSPassword>
-            <tns:DBMSPort>3003</tns:DBMSPort>
-          </tns:MySQLDBMSProperties>
-        </tosca:Properties>
-      </tosca:NodeTemplate>
-      <tosca:NodeTemplate xmlns:tns="http://toscafy.github.io/nodetypes" name="MySQL-DB" minInstances="1" maxInstances="1" id="mySQLDb" type="tns:MySQL-DB">
-        <tosca:Properties>
-          <tns:MySQLDBProperties xmlns="http://toscafy.github.io/nodetypes">
-            <tns:DBName>OpenTOSCATestDatabase</tns:DBName>
-            <tns:DBUser>openTOSCADBUser</tns:DBUser>
-            <tns:DBPassword>openTOSCADBPassword</tns:DBPassword>
-          </tns:MySQLDBProperties>
-        </tosca:Properties>
-        <!-- <tosca:DeploymentArtifacts>
-          <tosca:DeploymentArtifact xmlns:ns122="http://opentosca.org/artifacttypes" xmlns:ns121="http://toscafy.github.io/servicetemplates" name="MySQL-DB-OpenTOSCADB-SQL-DA" artifactType="ns122:SQLArtifact" artifactRef="ns121:MySQL-DB-OpenTOSCADB-SQL-ArtifactTemplate"/>
-        </tosca:DeploymentArtifacts> -->
-      </tosca:NodeTemplate>
-      <tosca:RelationshipTemplate xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes" name="con_11" id="con_11" type="tbt:HostedOn">
-        <tosca:SourceElement ref="mySQLDb"/>
-        <tosca:TargetElement ref="mySqlDBMS"/>
+      <% }); %>
+      <% _.forEach(top.relationships, function(r, rName) { %>
+      <tosca:RelationshipTemplate xmlns:rt="<%= r.namespace %>" name="<%= rName %>" id="<%= rName %>" type="rt:<%= r.type %>">
+        <tosca:SourceElement ref="<%= r.source %>"/>
+        <tosca:TargetElement ref="<%= r.target %>"/>
       </tosca:RelationshipTemplate>
-      <tosca:RelationshipTemplate xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes" name="con_23" id="con_23" type="tbt:HostedOn">
-        <tosca:SourceElement ref="mySqlDBMS"/>
-        <tosca:TargetElement ref="ubuntuVM"/>
-      </tosca:RelationshipTemplate>
-      <tosca:RelationshipTemplate xmlns:tbt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes" name="con_35" id="con_35" type="tbt:HostedOn">
-        <tosca:SourceElement ref="ubuntuVM"/>
-        <tosca:TargetElement ref="openstackCloudProvider"/>
-      </tosca:RelationshipTemplate>
+      <% }); %>
     </tosca:TopologyTemplate>
   </tosca:ServiceTemplate>
+  <% }); %>
 
 </tosca:Definitions>
