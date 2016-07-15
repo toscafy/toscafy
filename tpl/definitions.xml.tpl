@@ -128,7 +128,7 @@
     <% } %>
     <% _.forEach(art, function(value, name) { %>
     <% if (!_.includes(['type', 'namespace', 'name', 'references', 'properties'], name)) { %>
-    <<%= pName %>><%= pValue %></<%= pName %>>
+    <<%= name %>><%= value %></<%= name %>>
     <% } %>
     <% }); %>
   </tosca:ArtifactTemplate>
@@ -146,13 +146,13 @@
         <% if (!_.isEmpty(n.properties)) { %>
         <tosca:Properties>
           <tns:<%= n.type %>Properties xmlns="<%= spec.csar_namespace %>">
-            <% _.forEach(art.properties, function(pValue, pName) { %>
+            <% _.forEach(n.properties, function(pValue, pName) { %>
             <<%= pName %>><%= pValue %></<%= pName %>>
             <% }); %>
           </tns:<%= n.type %>Properties>
         </tosca:Properties>
         <% } %>
-        <% if (!_.isEmpty(nt.deployment_artifacts)) { %>
+        <% if (!_.isEmpty(n.deployment_artifacts)) { %>
         <tosca:DeploymentArtifacts>
           <% _.forEach(n.deployment_artifacts, function(da) { %>
           <tosca:DeploymentArtifact xmlns:da="<%= da.namespace %>" name="DA-<%= da.name %>" artifactType="da:<%= da.type %>" artifactRef="tns:<%= da.name %>"/>

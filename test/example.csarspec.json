@@ -1,10 +1,15 @@
 {
+  "csar_name": "example",
   "node_types": {
     "Apache": {
       "properties_schema": {
         "HTTPPort": {
           "type": "string",
           "default": "8080"
+        },
+        "UseSSL": {
+          "type": "boolean",
+          "default": "true"
         }
       },
       "operations": {
@@ -15,7 +20,7 @@
       "operations": {
         "install": [ "mysql_install" ]
       },
-      "deployment_artifacts": [ ]
+      "deployment_artifacts": [ "mysql_install" ]
     }
   },
   "artifacts": {
@@ -27,14 +32,14 @@
         "InvocationType": "SOAP/HTTP"
       },
       "references": [
-        { "$toscafy.fetch": "http://some/remote/location/to/fetch/file.war", "to": "file.war" },
-        "./some/local/path/to/file.war"
+        { "$toscafy.fetch": "https://gist.githubusercontent.com/jojow/0e5f6cea3d052999b662b60ad37f6d2f/raw/212ddd43f4372b95bb334aa94755412bc93cc117/opal-clus.metadata.json", "to": "opal-clus.metadata.json" },
+        "./some-script.sh"
       ]
     },
     "mysql_install": {
       "type": "DockerCompose",
-      "dockerComposeYml": "mysql/docker-compose.yml",
-      "context": "mysql/context.zip",
+      "dockerComposeYml": "./some-script.sh",
+      "context": "./some-script.sh",
       "serviceName": "mysql-mgmt-api",
       "privatePort": "3000",
       "urlPath": "/soap-endpoint"

@@ -6,23 +6,34 @@ const fs = require('fs');
 const path = require('path');
 const Generator = require('../lib/Generator');
 
+//TODO use .reset() for command-specific options and sub-commands: g/generate, gp/genpack, m/merge, ...
+
 const argv = require('yargs')
   .usage('Usage: $0 [OPTIONS]') // PATH | URL | -
   .example('$0 -o ../my-csar', 'Generate CSAR')
 
   .alias('s', 'spec')
   .describe('s', 'Path to CSAR spec')
+  .string()
+  .normalize('s')
   .nargs('s', 1)
 
   .alias('c', 'context')
   //.default('c', process.cwd())
-  .describe('c', 'Set working dir as context')
+  .describe('c', 'Path to working dir used as context')
+  .string()
+  .normalize('c')
   .nargs('c', 1)
 
   .alias('o', 'output')
-  .describe('o', 'Set output dir or file')
+  .describe('o', 'Path to output dir or file')
+  .string()
+  .normalize('o')
   .nargs('o', 1)
   .demand(['output'])
+
+  .describe('camelize', 'Convert names to camelCase')
+  .boolean('camelize')
 
   //.demand(1)
   .help('h')
@@ -31,13 +42,14 @@ const argv = require('yargs')
   .argv;
 
 
-
-argv.spec = argv.spec || path.join(process.cwd(), 'csarspec.json');
+argv.context = argv.context || process.cwd();
+argv.spec = argv.spec || path.join(argv.context, 'csarspec.json');
 
 Generator().generate(fs.readFileSync(argv.spec, 'utf8'), {
-  workingDir: argv.context || process.cwd(),
-  outputDir: argv.output
+  workingDir: argv.context,
+  outputDir: argv.output,
+  camelize: argv.camelize
 }, (err) => {
-  if (err) console.error(err);
+  if (err) throw err;
   else console.log('done');
 });
