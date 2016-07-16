@@ -7,15 +7,17 @@ const path = require('path');
 const Generator = require('../lib/Generator');
 
 const yargs = require('yargs')
-  .usage('Usage: $0 [COMMAND] [OPTIONS]') // PATH | URL | -
+  .usage('Usage: $0 [COMMAND] [OPTIONS]')
   .example('$0 generate -o ../my-csar', 'Generate CSAR')
   .command('generate', 'Generate TOSCA CSAR')
-  .command('gen', 'Alias for generate')
-  .demand(1, 'Must provide a valid command'),
+  .command('g', 'Alias for generate')
+  .command('merge', 'Merge CSAR specs')
+  .command('m', 'Alias for merge')
+  .demand(1, 'Valid command required'),
   argv = yargs.argv,
   command = argv._[0];
 
-if (command === 'generate' || command === 'gen') {
+if (command === 'generate' || command === 'g') {
   const argvGen = yargs.reset()
     .usage('Usage: $0 [COMMAND] [OPTIONS]') // PATH | URL | -
     .example('$0 generate -o ../my-csar', 'Generate CSAR')
@@ -36,12 +38,16 @@ if (command === 'generate' || command === 'gen') {
     .nargs('c', 1)
     //.default('c', process.cwd())
 
-    .describe('o', 'Path to output dir')
+    .describe('o', 'Path to output dir or file')
     .alias('o', 'output')
     .string()
     .normalize('o')
     .nargs('o', 1)
     .demand(['output'])
+
+    .describe('p', 'Package generated CSAR as single file')
+    .alias('p', 'package')
+    .boolean('p')
 
     .describe('camelize', 'Convert names to camelCase')
     .boolean('camelize')
@@ -59,14 +65,8 @@ if (command === 'generate' || command === 'gen') {
     if (err) throw err;
     else console.log('done');
   });
-/*} else if (command === 'world'){
-  yargs.reset()
-    .usage('$0 world')
-    .help('h')
-    .example('$0 world', 'print the world message!')
-    .argv
- 
-  console.log('world!');*/
+} else if (command === 'merge' || command === 'm') {
+  console.error('NOT IMPLEMENTED');
 } else {
   yargs.showHelp();
 }
