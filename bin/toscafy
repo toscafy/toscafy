@@ -6,50 +6,67 @@ const fs = require('fs');
 const path = require('path');
 const Generator = require('../lib/Generator');
 
-//TODO use .reset() for command-specific options and sub-commands: g/generate, gp/genpack, m/merge, ...
+const yargs = require('yargs')
+  .usage('Usage: $0 [COMMAND] [OPTIONS]') // PATH | URL | -
+  .example('$0 generate -o ../my-csar', 'Generate CSAR')
+  .command('generate', 'Generate TOSCA CSAR')
+  .command('gen', 'Alias for generate')
+  .demand(1, 'Must provide a valid command'),
+  argv = yargs.argv,
+  command = argv._[0];
 
-const argv = require('yargs')
-  .usage('Usage: $0 [OPTIONS]') // PATH | URL | -
-  .example('$0 -o ../my-csar', 'Generate CSAR')
+if (command === 'generate' || command === 'gen') {
+  const argvGen = yargs.reset()
+    .usage('Usage: $0 [COMMAND] [OPTIONS]') // PATH | URL | -
+    .example('$0 generate -o ../my-csar', 'Generate CSAR')
 
-  .alias('s', 'spec')
-  .describe('s', 'Path to CSAR spec')
-  .string()
-  .normalize('s')
-  .nargs('s', 1)
+    .help('h')
+    .alias('h', 'help')
 
-  .alias('c', 'context')
-  //.default('c', process.cwd())
-  .describe('c', 'Path to working dir used as context')
-  .string()
-  .normalize('c')
-  .nargs('c', 1)
+    .describe('s', 'Path to CSAR spec')
+    .alias('s', 'spec')
+    .string()
+    .normalize('s')
+    .nargs('s', 1)
 
-  .alias('o', 'output')
-  .describe('o', 'Path to output dir or file')
-  .string()
-  .normalize('o')
-  .nargs('o', 1)
-  .demand(['output'])
+    .describe('c', 'Path to working dir used as context')
+    .alias('c', 'context')
+    .string()
+    .normalize('c')
+    .nargs('c', 1)
+    //.default('c', process.cwd())
 
-  .describe('camelize', 'Convert names to camelCase')
-  .boolean('camelize')
+    .describe('o', 'Path to output dir')
+    .alias('o', 'output')
+    .string()
+    .normalize('o')
+    .nargs('o', 1)
+    .demand(['output'])
 
-  //.demand(1)
-  .help('h')
-  .alias('h', 'help')
-  //.epilog('copyright 2016')
-  .argv;
+    .describe('camelize', 'Convert names to camelCase')
+    .boolean('camelize')
 
+    .argv;
+ 
+  argvGen.context = argvGen.context || process.cwd();
+  argvGen.spec = argvGen.spec || path.join(argvGen.context, 'csarspec.json');
 
-argv.context = argv.context || process.cwd();
-argv.spec = argv.spec || path.join(argv.context, 'csarspec.json');
-
-Generator().generate(fs.readFileSync(argv.spec, 'utf8'), {
-  workingDir: argv.context,
-  outputDir: argv.output,
-  camelize: argv.camelize
-}, (err) => {
-  if (err) throw err;
-  else console.log('done');
-});
+  Generator().generate(fs.readFileSync(argvGen.spec, 'utf8'), {
+    workingDir: argvGen.context,
+    outputDir: argvGen.output,
+    camelize: argvGen.camelize
+  }, (err) => {
+    if (err) throw err;
+    else console.log('done');
+  });
+/*} else if (command === 'world'){
+  yargs.reset()
+    .usage('$0 world')
+    .help('h')
+    .example('$0 world', 'print the world message!')
+    .argv
+ 
+  console.log('world!');*/
+} else {
+  yargs.showHelp();
+}

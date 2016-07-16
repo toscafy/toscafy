@@ -5,7 +5,7 @@
   <!-- Artifact Types -->
   <!-- ============== -->
 
-  <% _.forEach(knownArtifactTypes, function(at) { %>
+  <% _.forEach(artifactTypes, function(at) { %>
   <tosca:ArtifactType name="<%= at.name %>" targetNamespace="<%= at.namespace %>"/>
   <% }); %>
 
@@ -17,7 +17,7 @@
   <!-- Relationship Types -->
   <!-- ================== -->
 
-  <% _.forEach(knownRelationshipTypes, function(rt) { %>
+  <% _.forEach(relationshipTypes, function(rt) { %>
   <tosca:RelationshipType name="<%= rt.name %>" targetNamespace="<%= rt.name %>"/>
   <% }); %>
 
