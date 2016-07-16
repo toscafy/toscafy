@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/toscafy/toscafy#readme",
   "dependencies": {
+    "archiver": "^1.0.0",
     "async": "^2.0.0",
     "fs-extra": "^0.30.0",
     "glob": "^7.0.5",

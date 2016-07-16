@@ -2,22 +2,44 @@
 
 'use strict';
 
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
+const _ = require('lodash');
 const Generator = require('../lib/Generator');
 
 const yargs = require('yargs')
   .usage('Usage: $0 [COMMAND] [OPTIONS]')
   .example('$0 generate -o ../my-csar', 'Generate CSAR')
+
   .command('generate', 'Generate TOSCA CSAR')
   .command('g', 'Alias for generate')
   .command('merge', 'Merge CSAR specs')
   .command('m', 'Alias for merge')
-  .demand(1, 'Valid command required'),
-  argv = yargs.argv,
-  command = argv._[0];
+  .demand(1, 'Valid command required')
+  //.string('_')
 
-if (command === 'generate' || command === 'g') {
+  //.describe('debug', 'Debug mode, print error stacktrace')
+  .boolean('debug')
+  .global('debug'),
+
+  argv = yargs.argv,
+  command = _.first(argv._);
+
+const exit = (err, out) => {
+  if (err && argv.debug) {
+    throw err;
+  } else if (err) {
+    console.error(err.toString());
+    process.exit(1);
+  } else {
+    console.log(out);
+    process.exit();
+  }
+};
+
+
+
+if (_.includes(['generate', 'g'], command)) {
   const argvGen = yargs.reset()
     .usage('Usage: $0 [COMMAND] [OPTIONS]') // PATH | URL | -
     .example('$0 generate -o ../my-csar', 'Generate CSAR')
@@ -25,47 +47,62 @@ if (command === 'generate' || command === 'g') {
     .help('h')
     .alias('h', 'help')
 
+    .string('s')
     .describe('s', 'Path to CSAR spec')
     .alias('s', 'spec')
-    .string()
     .normalize('s')
     .nargs('s', 1)
 
+    .string('c')
     .describe('c', 'Path to working dir used as context')
     .alias('c', 'context')
-    .string()
     .normalize('c')
     .nargs('c', 1)
     //.default('c', process.cwd())
 
+    .string('o')
     .describe('o', 'Path to output dir or file')
     .alias('o', 'output')
-    .string()
     .normalize('o')
     .nargs('o', 1)
     .demand(['output'])
 
-    .describe('p', 'Package generated CSAR as single file')
-    .alias('p', 'package')
-    .boolean('p')
+//TODO add option --clear-output
+//TODO add option --pack-format
+// .choices('pack-format', ['zip', 'tar', 'tgz', 'targz'])
 
-    .describe('camelize', 'Convert names to camelCase')
+    .boolean('p')
+    .describe('p', 'Package generated CSAR as single file')
+    .alias('p', 'pack')
+
     .boolean('camelize')
+    .describe('camelize', 'Convert names to camelCase')
+
+    .boolean('clear-output')
+    .describe('clear-output', 'Remove existing output dir or file')
 
     .argv;
  
   argvGen.context = argvGen.context || process.cwd();
   argvGen.spec = argvGen.spec || path.join(argvGen.context, 'csarspec.json');
+  argvGen.output = path.resolve(argvGen.output);
 
-  Generator().generate(fs.readFileSync(argvGen.spec, 'utf8'), {
-    workingDir: argvGen.context,
-    outputDir: argvGen.output,
-    camelize: argvGen.camelize
-  }, (err) => {
-    if (err) throw err;
-    else console.log('done');
-  });
-} else if (command === 'merge' || command === 'm') {
+  if (argvGen.clearOutput) fs.removeSync(argvGen.output);
+
+  if (argvGen.pack) {
+    // generate to temp dir
+    // create ZIP file to output path
+    // remove temp dir
+  } else {
+    Generator().generate(fs.readFileSync(argvGen.spec, 'utf8'), {
+      workingDir: argvGen.context,
+      outputDir: argvGen.output,
+      camelize: argvGen.camelize
+    }, (err) => {
+      exit(err, argvGen.output);
+    });
+  }
+} else if (_.includes(['merge', 'm'], command)) {
   console.error('NOT IMPLEMENTED');
 } else {
   yargs.showHelp();

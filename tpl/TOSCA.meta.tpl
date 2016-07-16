@@ -1,13 +1,16 @@
 TOSCA-Meta-Version: 1.0
 CSAR-Version: 1.0
 Created-By: TOSCAfy
-Entry-Definitions: definitions.xml
+Entry-Definitions: <%= definitionsFilename %>
 
-Name: definitions.xml
+Name: <%= definitionsFilename %>
 Content-Type: application/vnd.oasis.tosca.definitions
 
-Name: properties.xsd
+Name: <%= propertiesFilename %>
 Content-Type: text/xml
+
+Name: csarspec.json
+Content-Type: application/json
 
 <% _.forEach(files, function(file) { %>
 Name: <%= file %>
