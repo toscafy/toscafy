@@ -5,7 +5,9 @@
 const fs = require('fs-extra');
 const path = require('path');
 const _ = require('lodash');
+
 const Generator = require('../lib/Generator');
+const GenPacker = require('../lib/GenPacker');
 
 const yargs = require('yargs')
   .usage('Usage: $0 [COMMAND] [OPTIONS]')
@@ -67,13 +69,15 @@ if (_.includes(['generate', 'g'], command)) {
     .nargs('o', 1)
     .demand(['output'])
 
-//TODO add option --clear-output
-//TODO add option --pack-format
-// .choices('pack-format', ['zip', 'tar', 'tgz', 'targz'])
-
     .boolean('p')
     .describe('p', 'Package generated CSAR as single file')
     .alias('p', 'pack')
+
+    .string('pack-format')
+    .describe('pack-format', 'Packaging format of generated CSAR')
+    .choices('pack-format', ['zip', 'tar', 'tgz', 'targz'])
+    .default('pack-format', 'zip')
+    .nargs('pack-format', 1)
 
     .boolean('camelize')
     .describe('camelize', 'Convert names to camelCase')
@@ -89,10 +93,17 @@ if (_.includes(['generate', 'g'], command)) {
 
   if (argvGen.clearOutput) fs.removeSync(argvGen.output);
 
+  //TODO support reading csarSpec from stdin instead of argvGen.spec
+  //TODO support writing packed CSAR to stdout instead of argvGen.output
   if (argvGen.pack) {
-    // generate to temp dir
-    // create ZIP file to output path
-    // remove temp dir
+    GenPacker().genpack(fs.readFileSync(argvGen.spec, 'utf8'), {
+      workingDir: argvGen.context,
+      outputFile: argvGen.output,
+      camelize: argvGen.camelize,
+      format: argvGen.packFormat
+    }, (err) => {
+      exit(err, argvGen.output);
+    });
   } else {
     Generator().generate(fs.readFileSync(argvGen.spec, 'utf8'), {
       workingDir: argvGen.context,
@@ -103,7 +114,7 @@ if (_.includes(['generate', 'g'], command)) {
     });
   }
 } else if (_.includes(['merge', 'm'], command)) {
-  console.error('NOT IMPLEMENTED');
+  exit(new Error('not implemented'));
 } else {
   yargs.showHelp();
 }
