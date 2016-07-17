@@ -20,7 +20,7 @@
       "operations": {
         "install": [ "mysql_install" ]
       },
-      "deployment_artifacts": [ "mysql_install" ]
+      "deployment_artifacts": "mysql_install"
     }
   },
   "artifacts": {
