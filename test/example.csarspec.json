@@ -18,9 +18,19 @@
     },
     "MySQL": {
       "operations": {
-        "install": [ "mysql_install" ]
+        "install": "mysql_install"
       },
-      "deployment_artifacts": "mysql_install"
+      "deployment_artifact": {
+        "type": "WAR",
+        "properties": {
+          "ServiceEndpoint": "/services/org_opentosca_NodeTypes_UbuntuPort",
+          "PortType": "{http://opentosca.org/NodeTypes}org_opentosca_NodeTypes_Ubuntu",
+          "InvocationType": "SOAP/HTTP"
+        },
+        "references": [
+          "some-dir/test2.txt"
+        ]
+      }
     }
   },
   "artifacts": {
