@@ -9,7 +9,7 @@ const ora = require('ora');
 
 const yargs = require('yargs')
   .usage('Usage: $0 [COMMAND] [OPTIONS]')
-  .example('$0 generate -o ../my-csar', 'Generate CSAR')
+  .example('$0 generate -o /my/csar-dir', 'Generate CSAR')
 
   .command('generate', 'Generate TOSCA CSAR')
   .command('g', 'Alias for generate')
@@ -42,8 +42,8 @@ const exit = (err, out) => {
 if (_.includes(['generate', 'g'], command)) {
   const argvGen = yargs.reset()
     .usage('Usage: $0 generate | g [OPTIONS]') // PATH | URL | -
-    .example('$0 generate -o ../my-csar', 'Generate CSAR as directory')
-    .example('$0 g -p -o ../my-csar.zip', 'Generate CSAR as ZIP file')
+    .example('$0 generate -o /my/csar-dir', 'Generate CSAR as directory')
+    .example('$0 g -p -o /my/csar.zip', 'Generate CSAR as ZIP file')
 
     .help('h')
     .alias('h', 'help')
@@ -93,7 +93,9 @@ if (_.includes(['generate', 'g'], command)) {
   if (argvGen.clearOutput) fs.removeSync(argvGen.output);
 
   //TODO support reading csarSpec from stdin instead of argvGen.spec, check https://www.npmjs.com/package/get-stdin
-  //TODO support writing packed CSAR to stdout instead of argvGen.output
+
+  //TODO if argvGen.output='-', write packed CSAR to stdout
+
   if (argvGen.pack) {
     const GenPacker = require('../lib/GenPacker');
 
