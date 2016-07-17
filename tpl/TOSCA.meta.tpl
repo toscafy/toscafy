@@ -1,6 +1,6 @@
 TOSCA-Meta-Version: 1.0
 CSAR-Version: 1.0
-Created-By: TOSCAfy
+Created-By: toscafy
 Entry-Definitions: <%= definitionsFilename %>
 
 Name: <%= definitionsFilename %>

@@ -41,8 +41,9 @@ const exit = (err, out) => {
 
 if (_.includes(['generate', 'g'], command)) {
   const argvGen = yargs.reset()
-    .usage('Usage: $0 generate [OPTIONS]') // PATH | URL | -
-    .example('$0 generate -o ../my-csar', 'Generate CSAR')
+    .usage('Usage: $0 generate | g [OPTIONS]') // PATH | URL | -
+    .example('$0 generate -o ../my-csar', 'Generate CSAR as directory')
+    .example('$0 g -p -o ../my-csar.zip', 'Generate CSAR as ZIP file')
 
     .help('h')
     .alias('h', 'help')

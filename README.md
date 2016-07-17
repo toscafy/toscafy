@@ -1,5 +1,8 @@
-# TOSCAfy
+# toscafy
 
+... explain CSAR spec schema
+
+... explain $toscafy builtin functions
 
 ### TODO
 * toscafy project contains lib+cli+api to generate CSARs, merge CSARs, generate topologies, ...
