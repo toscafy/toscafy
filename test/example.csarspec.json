@@ -32,8 +32,9 @@
         "InvocationType": "SOAP/HTTP"
       },
       "references": [
-        { "$toscafy.fetch": "https://gist.githubusercontent.com/jojow/0e5f6cea3d052999b662b60ad37f6d2f/raw/212ddd43f4372b95bb334aa94755412bc93cc117/opal-clus.metadata.json", "to": "opal-clus.metadata.json" },
-        "./some-script.sh"
+        { "$toscafy.fetchAsFile": "https://gist.githubusercontent.com/jojow/0e5f6cea3d052999b662b60ad37f6d2f/raw/212ddd43f4372b95bb334aa94755412bc93cc117/opal-clus.metadata.json", "filename": "opal-clus.metadata.json" },
+        "./some-script.sh",
+        "some-dir/sub-dir/test3.txt"
       ]
     },
     "mysql_install": {
@@ -67,5 +68,16 @@
         }
       }
     }
-  }
+  },
+
+  "t1": { "$toscafy.fetchAsText": "https://gist.githubusercontent.com/jojow/0e5f6cea3d052999b662b60ad37f6d2f/raw/212ddd43f4372b95bb334aa94755412bc93cc117/opal-clus.metadata.json" },
+  "t2": { "$toscafy.fetchAsJson": "https://gist.githubusercontent.com/jojow/0e5f6cea3d052999b662b60ad37f6d2f/raw/212ddd43f4372b95bb334aa94755412bc93cc117/opal-clus.metadata.json" },
+  "t3": { "$toscafy.fetchAsBase64": "https://gist.githubusercontent.com/jojow/0e5f6cea3d052999b662b60ad37f6d2f/raw/212ddd43f4372b95bb334aa94755412bc93cc117/opal-clus.metadata.json" },
+
+  "t4": { "$toscafy.embedFileAsText": "some-script.sh" },
+  "t5": { "$toscafy.embedFileAsJson": "example.csarspec.json" },
+  "t6": { "$toscafy.embedFileAsBase64": "some-script.sh" },
+
+  "t7": { "$toscafy.embedDirAsZipBase64": "some-dir" },
+  "t8": { "$toscafy.embedDirAsTgzBase64": "some-dir" }
 }

@@ -92,7 +92,7 @@ if (_.includes(['generate', 'g'], command)) {
 
   if (argvGen.clearOutput) fs.removeSync(argvGen.output);
 
-  //TODO support reading csarSpec from stdin instead of argvGen.spec
+  //TODO support reading csarSpec from stdin instead of argvGen.spec, check https://www.npmjs.com/package/get-stdin
   //TODO support writing packed CSAR to stdout instead of argvGen.output
   if (argvGen.pack) {
     const GenPacker = require('../lib/GenPacker');
