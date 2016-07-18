@@ -127,7 +127,9 @@ To inject XML snippets that define custom artifact types, relationship types, or
 
 
 
-## Built-in functions
+## Built-in types and functions
+
+Please check the head of [lib/Generator.js](lib/Generator.js) to see which artifact types, relationship types, and functions are currently built into **toscafy**.
 
 CSAR specs can refer to built-in functions provided by **toscafy**.
 For example, the following artifact definition uses the `$toscafy.fetchAsFile` function to fetch a file and adds it to the generated CSAR:
