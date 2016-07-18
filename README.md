@@ -15,7 +15,7 @@ This helps to apply established CI/CD principles by automating the build and del
 
 First, you need to install **toscafy**.
 Node.js version 4 or better is required.
-Use npm to **toscafy**:
+Use npm to install **toscafy**:
 
     npm install toscafy -g
 
@@ -42,13 +42,13 @@ A `csarspec.json` file is structured as follows:
 
 ``` plaintext
 {
-  "csar_name":       (string),
+  "csar_name":       (string),   # name of CSAR
   "node_types": {
     (nodeTypeName): {
       "properties_schema": {
         (nodeTypePropertyName): {
-          "type":    (string),
-          "default": (string)
+          "type":    (string),   # XSD type
+          "default": (string)    # default value
         }
       },
       "operations": {
@@ -63,12 +63,12 @@ A `csarspec.json` file is structured as follows:
   },
   "artifacts": {
     (artifactName): {
-      "type":                   (string),
+      "type": (string),   # artifact type
       "properties": {
         (artifactPropertyName): (any)
       },
       "references": [
-        (string)
+        (string)          # file path
       ]
     }
   },
@@ -76,7 +76,7 @@ A `csarspec.json` file is structured as follows:
     (topologyName): {
       "nodes": {
         (nodeName): {
-          "type":                   (string),
+          "type": (nodeTypeName),
           "properties": {
             (nodeTypePropertyName): (any)
           },
@@ -87,7 +87,7 @@ A `csarspec.json` file is structured as follows:
       },
       "relationships": {
         (relationshipName): {
-          "type":   (string),
+          "type":   (string),     # relationship type
           "source": (nodeName),
           "target": (nodeName)
         }
