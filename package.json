@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Generate TOSCA CSARs from csarspec.json files",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "bin/toscafy generate --debug -o test/out -c test -s test/example.csarspec.json --camelize --clear-output ; cat test/out/definitions.xml ; rm -rf test/out"
+  },
   "bin": {
     "toscafy": "bin/toscafy"
   },
