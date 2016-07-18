@@ -43,6 +43,7 @@ A `csarspec.json` file is structured as follows:
 ``` plaintext
 {
   "csar_name":       (string),   # name of CSAR
+
   "node_types": {
     (nodeTypeName): {
       "properties_schema": {
@@ -51,40 +52,49 @@ A `csarspec.json` file is structured as follows:
           "default": (string)    # default value
         }
       },
+
       "operations": {
         (operationName): [
           (artifactName) | (artifactObject)
         ]
       },
+
       "deployment_artifacts": [
         (artifactName) | (artifactObject)
       ]
     }
   },
+
   "artifacts": {
     (artifactName): {
       "type": (string),   # artifact type
+
       "properties": {
         (artifactPropertyName): (any)
       },
+
       "references": [
         (string)          # file path
       ]
     }
   },
+
   "topologies": {
     (topologyName): {
       "nodes": {
         (nodeName): {
           "type": (nodeTypeName),
+
           "properties": {
             (nodeTypePropertyName): (any)
           },
+
           "deployment_artifacts": [
             (artifactName) | (artifactObject)
           ]
         }
       },
+
       "relationships": {
         (relationshipName): {
           "type":   (string),     # relationship type
@@ -104,13 +114,13 @@ To inject XML snippets that define custom artifact types, relationship types, or
 {
   ...
   "artifact_types_xml": [
-    (string)
+    (string)   # XML snippet
   ],
   "relationship_types_xml":  [
-    (string)
+    (string)   # XML snippet
   ],
   "xsd_types_xml": [
-    (string)
+    (string)   # XML snippet
   ]
 }
 ```
