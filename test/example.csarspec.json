@@ -13,7 +13,8 @@
         }
       },
       "operations": {
-        "install": [ "apache_install" ]
+        "install": [ "apache_install" ],
+        "configure": [ "apache_install" ]
       }
     },
     "MySQL": {

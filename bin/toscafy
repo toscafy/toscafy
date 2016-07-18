@@ -74,7 +74,7 @@ if (_.includes(['generate', 'g'], command)) {
 
     .string('pack-format')
     .describe('pack-format', 'Packaging format of generated CSAR')
-    .choices('pack-format', ['zip', 'tar', 'tgz', 'targz'])
+    .choices('pack-format', ['zip', 'tar', 'tgz'])
     .default('pack-format', 'zip')
     .nargs('pack-format', 1)
 
