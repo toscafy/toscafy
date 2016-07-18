@@ -5,7 +5,7 @@
 Manually creating TOSCA CSARs consisting of node types, artifact templates, and topology templates is not so much fun: several abstraction layers paired with a sophisticated XML syntax makes managing CSARs challenging to say the least.
 
 Therefore, **toscafy** aims to simplify this task without relying on a specific modeling tool.
-You simply create a **`csarspec.json`** file that exactly consists of the parts required to generate a corresponding CSAR.
+You just create a `csarspec.json` file that exactly consists of the parts required to generate a corresponding CSAR.
 By using **toscafy**, CSARs are no longer maintained manually as source artifacts, but they are generated based on the CSAR spec.
 Thus, it is enough to store the CSAR spec and all related files such as scripts inside a version-controlled repository.
 An associated CI/CD pipeline could then rebuild, test, and publish the resulting CSARs when changes are committed.
@@ -14,7 +14,8 @@ This helps to apply established CI/CD principles by automating the build and del
 ## Get started
 
 First, you need to install **toscafy**.
-You can use npm:
+Node.js version 4 or better is required.
+Use npm to **toscafy**:
 
     npm install toscafy -g
 
@@ -31,7 +32,7 @@ Alternatively, you could produce a CSAR that's already packaged as single ZIP fi
 
 
 
-## CSAR spec
+## CSAR spec schema
 
 A `csarspec.json` file is structured as follows:
 
@@ -110,7 +111,7 @@ To inject XML snippets that define custom artifact types, relationship types, or
 ## Built-in functions
 
 CSAR specs can refer to built-in functions provided by **toscafy**.
-For example, the following artifact uses the `$toscafy.fetchAsFile` function to fetch a file and adds it to the generated CSAR:
+For example, the following artifact definition uses the `$toscafy.fetchAsFile` function to fetch a file and adds it to the generated CSAR:
 
 ``` plaintext
 {
@@ -126,6 +127,25 @@ For example, the following artifact uses the `$toscafy.fetchAsFile` function to 
 }
 ```
 
+You could also embed the content of a file into the CSAR spec:
+
+``` plaintext
+{
+  "artifacts": {
+    "apache_install": {
+      "type": "script",
+      "properties": {
+        "envVars": { "$toscafy.embedFileAsText": "./some-file.txt" }
+      },
+      "references": [
+        "./some-script.sh"
+      ]
+    }
+  }
+}
+```
+
+Built-in functions can be included at any position in the `csarspec.json` file.
 Currently, the following built-in functions are provided:
 
 * `$toscafy.fetchAsFile` fetches a remote file and adds it to the generated CSAR as `filename`
