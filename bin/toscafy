@@ -32,7 +32,7 @@ const exit = (err, out) => {
     console.log(err.toString());
     process.exit(1);
   } else {
-    console.log(out);
+    if (out) console.log(out);
     process.exit();
   }
 };
@@ -62,7 +62,7 @@ if (_.includes(['generate', 'g'], command)) {
     //.default('c', process.cwd())
 
     .string('o')
-    .describe('o', 'Path to output dir or file')
+    .describe('o', 'Path to output dir or file; use - for stdout')
     .alias('o', 'output')
     .normalize('o')
     .nargs('o', 1)
@@ -88,19 +88,42 @@ if (_.includes(['generate', 'g'], command)) {
  
   argvGen.context = argvGen.context || process.cwd();
   argvGen.spec = argvGen.spec || path.join(argvGen.context, 'csarspec.json');
+  argvGen.spec = path.resolve(argvGen.spec);
+
+  let csarSpec;
+
+  try {
+    csarSpec = fs.readFileSync(argvGen.spec, 'utf8');
+  } catch (err) {
+    argvGen.spec = path.join(argvGen.spec, 'csarspec.json');
+
+    try {
+      csarSpec = fs.readFileSync(argvGen.spec, 'utf8');
+    } catch (err2) {
+      exit(new Error('cannot find or read csarspec.json, please specify location'));
+    }
+  }
 
   if (argvGen.output && argvGen.clearOutput) fs.removeSync(argvGen.output);
 
   //TODO support reading csarSpec from stdin instead of argvGen.spec, check https://www.npmjs.com/package/get-stdin
+  // ... by default set context/workingDir=EMPTY_TEMP_DIR if csarspec is provided through stdin
 
-  //TODO if argvGen.output='-', write packed CSAR to stdout
+  if (argvGen.output === '-') {
+    const GenPacker = require('../lib/GenPacker');
 
-  if (argvGen.pack) {
+    GenPacker().genpack(csarSpec, {
+      workingDir: argvGen.context,
+      outputStream: process.stdout,
+      camelize: argvGen.camelize,
+      format: argvGen.packFormat
+    }, exit);
+  } else if (argvGen.pack) {
     const GenPacker = require('../lib/GenPacker');
 
     const spinner = ora('Generating CSAR as packaged file').start();
 
-    GenPacker().genpack(fs.readFileSync(argvGen.spec, 'utf8'), {
+    GenPacker().genpack(csarSpec, {
       workingDir: argvGen.context,
       outputFile: argvGen.output,
       camelize: argvGen.camelize,
@@ -119,7 +142,7 @@ if (_.includes(['generate', 'g'], command)) {
     //  spinner.text = 'Loading rainbows';
     //}, 1000 * 1);
 
-    Generator().generate(fs.readFileSync(argvGen.spec, 'utf8'), {
+    Generator().generate(csarSpec, {
       workingDir: argvGen.context,
       outputDir: argvGen.output,
       camelize: argvGen.camelize
