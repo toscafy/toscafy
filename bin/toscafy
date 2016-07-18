@@ -6,6 +6,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const _ = require('lodash');
 const ora = require('ora');
+const getStdin = require('get-stdin');
 
 const yargs = require('yargs')
   .usage('Usage: $0 [COMMAND] [OPTIONS]')
@@ -27,14 +28,16 @@ const yargs = require('yargs')
 
 const exit = (err, out) => {
   if (err && argv.debug) {
+    console.log(err.toString());
     throw err;
   } else if (err) {
     console.log(err.toString());
     process.exit(1);
-  } else {
-    if (out) console.log(out);
-    process.exit();
+  } else if (out) {
+    console.log(out);
   }
+
+  process.exit();
 };
 
 
@@ -49,7 +52,7 @@ if (_.includes(['generate', 'g'], command)) {
     .alias('h', 'help')
 
     .string('s')
-    .describe('s', 'Path to CSAR spec')
+    .describe('s', 'Path to CSAR spec, use - for stdin')
     .alias('s', 'spec')
     .normalize('s')
     .nargs('s', 1)
@@ -62,7 +65,7 @@ if (_.includes(['generate', 'g'], command)) {
     //.default('c', process.cwd())
 
     .string('o')
-    .describe('o', 'Path to output dir or file; use - for stdout')
+    .describe('o', 'Path to output dir or file, use - for stdout')
     .alias('o', 'output')
     .normalize('o')
     .nargs('o', 1)
@@ -85,71 +88,87 @@ if (_.includes(['generate', 'g'], command)) {
     .describe('clear-output', 'Remove existing output dir or file')
 
     .argv;
- 
+
+  const generate = (csarSpec) => {
+    if (argvGen.output && argvGen.clearOutput) fs.removeSync(argvGen.output);
+
+    if (argvGen.output === '-') {
+      const GenPacker = require('../lib/GenPacker');
+
+      GenPacker().genpack(csarSpec, {
+        workingDir: argvGen.context,
+        outputStream: process.stdout,
+        camelize: argvGen.camelize,
+        format: argvGen.packFormat
+      }, exit);
+    } else if (argvGen.pack) {
+      const GenPacker = require('../lib/GenPacker');
+
+      const spinner = ora('Generating CSAR as packaged file').start();
+
+      GenPacker().genpack(csarSpec, {
+        workingDir: argvGen.context,
+        outputFile: argvGen.output,
+        camelize: argvGen.camelize,
+        format: argvGen.packFormat
+      }, (err, outputFile) => {
+        spinner.clear();
+        exit(err, outputFile);
+      });
+    } else {
+      const Generator = require('../lib/Generator');
+
+      const spinner = ora('Generating CSAR as directory').start();
+
+      //setTimeout(() => {
+      //  spinner.color = 'yellow';
+      //  spinner.text = 'Loading rainbows';
+      //}, 1000 * 1);
+
+      Generator().generate(csarSpec, {
+        workingDir: argvGen.context,
+        outputDir: argvGen.output,
+        camelize: argvGen.camelize
+      }, (err, outputDir) => {
+        spinner.clear();
+        exit(err, outputDir);
+      });
+    }
+  };
+
   argvGen.context = argvGen.context || process.cwd();
-  argvGen.spec = argvGen.spec || path.join(argvGen.context, 'csarspec.json');
-  argvGen.spec = path.resolve(argvGen.spec);
 
-  let csarSpec;
+  if (argvGen.spec === '-') {
+    getStdin().then(stdin => {
+      try {
+        const csarSpec = JSON.parse(stdin);
 
-  try {
-    csarSpec = fs.readFileSync(argvGen.spec, 'utf8');
-  } catch (err) {
-    argvGen.spec = path.join(argvGen.spec, 'csarspec.json');
+        generate(csarSpec);
+      } catch (err) {
+        exit(new Error('cannot parse stdin as JSON, ' + err));
+      }
+    }).catch(err => {
+      exit(new Error('cannot parse stdin as JSON, ' + err));
+    });
+  } else {
+    argvGen.spec = argvGen.spec || path.join(argvGen.context, 'csarspec.json');
+    argvGen.spec = path.resolve(argvGen.spec);
+
+    let csarSpec;
 
     try {
       csarSpec = fs.readFileSync(argvGen.spec, 'utf8');
-    } catch (err2) {
-      exit(new Error('cannot find or read csarspec.json, please specify location'));
+    } catch (err) {
+      argvGen.spec = path.join(argvGen.spec, 'csarspec.json');
+
+      try {
+        csarSpec = fs.readFileSync(argvGen.spec, 'utf8');
+      } catch (err2) {
+        return exit(new Error('cannot find or read csarspec.json, please specify location'));
+      }
     }
-  }
 
-  if (argvGen.output && argvGen.clearOutput) fs.removeSync(argvGen.output);
-
-  //TODO support reading csarSpec from stdin instead of argvGen.spec, check https://www.npmjs.com/package/get-stdin
-  // ... by default set context/workingDir=EMPTY_TEMP_DIR if csarspec is provided through stdin
-
-  if (argvGen.output === '-') {
-    const GenPacker = require('../lib/GenPacker');
-
-    GenPacker().genpack(csarSpec, {
-      workingDir: argvGen.context,
-      outputStream: process.stdout,
-      camelize: argvGen.camelize,
-      format: argvGen.packFormat
-    }, exit);
-  } else if (argvGen.pack) {
-    const GenPacker = require('../lib/GenPacker');
-
-    const spinner = ora('Generating CSAR as packaged file').start();
-
-    GenPacker().genpack(csarSpec, {
-      workingDir: argvGen.context,
-      outputFile: argvGen.output,
-      camelize: argvGen.camelize,
-      format: argvGen.packFormat
-    }, (err, outputFile) => {
-      spinner.clear();
-      exit(err, outputFile);
-    });
-  } else {
-    const Generator = require('../lib/Generator');
-
-    const spinner = ora('Generating CSAR as directory').start();
-
-    //setTimeout(() => {
-    //  spinner.color = 'yellow';
-    //  spinner.text = 'Loading rainbows';
-    //}, 1000 * 1);
-
-    Generator().generate(csarSpec, {
-      workingDir: argvGen.context,
-      outputDir: argvGen.output,
-      camelize: argvGen.camelize
-    }, (err, outputDir) => {
-      spinner.clear();
-      exit(err, outputDir);
-    });
+    generate(csarSpec);
   }
 } else if (_.includes(['merge', 'm'], command)) {
   exit(new Error('not implemented'));

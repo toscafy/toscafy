@@ -2,6 +2,8 @@
 
 * core toscafy project contains lib+cli+api to generate CSARs, merge CSARs, generate topologies, ...
 * additional projects (lib+cli): toscafy-chef, toscafy-docker, toscafy-devopsbase, ...
+  * no separate CLIs but try to dynamically load them in toscafy
+  * commands: generate -> build
 
 
 
