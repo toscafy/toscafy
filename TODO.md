@@ -5,7 +5,7 @@
 
 * replace path.join by path.resolve to allow absolute paths in csarspec
 * make definition of output param optional, write to temp location by default
-* set context/workingDir=outputDir/tempDir if csarspec is provided through stdin
+* by default set context/workingDir=EMPTY_TEMP_DIR if csarspec is provided through stdin
 
 
 
