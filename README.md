@@ -30,6 +30,10 @@ Alternatively, you could produce a CSAR that's already packaged as single ZIP fi
 
     toscafy generate -p -o /my/csar.zip
 
+Instead of installing **toscafy** on your machine, you can immediately run it using Docker:
+
+    docker run toscafy/cli --help
+
 
 
 ## CSAR spec schema
