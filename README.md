@@ -150,7 +150,7 @@ You could also embed the content of a file into the CSAR spec:
 }
 ```
 
-Built-in functions can be included at any position in the `csarspec.json` file.
+Built-in functions can be included at any position in the `csarspec.json` file where an arbitrary value would be allowed.
 Currently, the following built-in functions are provided:
 
 * `$toscafy.fetchAsFile` fetches a remote file and adds it to the generated CSAR as `filename`
