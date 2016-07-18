@@ -119,18 +119,13 @@
       <% } %>
     </tosca:Properties>
     <% } %>
-    <% if (_.includes(['ScriptArtifact', 'WAR'], art.type) && !_.isEmpty(art.references)) { %>
+    <% if (!_.isEmpty(art.references)) { %>
     <tosca:ArtifactReferences>
       <% _.forEach(art.references, function(ref) { %>
       <tosca:ArtifactReference reference="<%= ref %>"/>
       <% }); %>
     </tosca:ArtifactReferences>
     <% } %>
-    <% _.forEach(art, function(value, name) { %>
-    <% if (!_.includes(['type', 'namespace', 'name', 'references', 'properties'], name)) { %>
-    <<%= name %>><%= value %></<%= name %>>
-    <% } %>
-    <% }); %>
   </tosca:ArtifactTemplate>
   <% }); %>
 

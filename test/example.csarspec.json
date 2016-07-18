@@ -50,11 +50,13 @@
     },
     "mysql_install": {
       "type": "DockerCompose",
-      "dockerComposeYml": "./some-script.sh",
-      "context": "./some-script.sh",
-      "serviceName": "mysql-mgmt-api",
-      "privatePort": "3000",
-      "urlPath": "/soap-endpoint"
+      "properties": {
+        "dockerComposeYml": "./some-script.sh",
+        "context": "./some-script.sh",
+        "serviceName": "mysql-mgmt-api",
+        "privatePort": "3000",
+        "urlPath": "/soap-endpoint"
+      }
     }
   },
   "topologies": {

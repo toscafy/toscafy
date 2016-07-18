@@ -59,15 +59,20 @@ A `csarspec.json` file is structured as follows:
   },
   "artifacts": {
     (artifactName): {
-      "type":             (string),
-      (artifactProperty): (any)
+      "type":                   (string),
+      "properties": {
+        (artifactPropertyName): (any)
+      },
+      "references": [
+        (string)
+      ]
     }
   },
   "topologies": {
     (topologyName): {
       "nodes": {
         (nodeName): {
-          "type":         (string),
+          "type":                   (string),
           "properties": {
             (nodeTypePropertyName): (any)
           },
