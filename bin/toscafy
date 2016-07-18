@@ -66,7 +66,7 @@ if (_.includes(['generate', 'g'], command)) {
     .alias('o', 'output')
     .normalize('o')
     .nargs('o', 1)
-    .demand(['output'])
+    //.demand(['output'])
 
     .boolean('p')
     .describe('p', 'Package generated CSAR as single file')
@@ -88,9 +88,8 @@ if (_.includes(['generate', 'g'], command)) {
  
   argvGen.context = argvGen.context || process.cwd();
   argvGen.spec = argvGen.spec || path.join(argvGen.context, 'csarspec.json');
-  argvGen.output = path.resolve(argvGen.output);
 
-  if (argvGen.clearOutput) fs.removeSync(argvGen.output);
+  if (argvGen.output && argvGen.clearOutput) fs.removeSync(argvGen.output);
 
   //TODO support reading csarSpec from stdin instead of argvGen.spec, check https://www.npmjs.com/package/get-stdin
 
@@ -106,9 +105,9 @@ if (_.includes(['generate', 'g'], command)) {
       outputFile: argvGen.output,
       camelize: argvGen.camelize,
       format: argvGen.packFormat
-    }, (err) => {
+    }, (err, outputFile) => {
       spinner.clear();
-      exit(err, argvGen.output);
+      exit(err, outputFile);
     });
   } else {
     const Generator = require('../lib/Generator');
@@ -124,9 +123,9 @@ if (_.includes(['generate', 'g'], command)) {
       workingDir: argvGen.context,
       outputDir: argvGen.output,
       camelize: argvGen.camelize
-    }, (err) => {
+    }, (err, outputDir) => {
       spinner.clear();
-      exit(err, argvGen.output);
+      exit(err, outputDir);
     });
   }
 } else if (_.includes(['merge', 'm'], command)) {
