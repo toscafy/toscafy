@@ -1,1 +1,4 @@
-module.exports = require('./lib/Generator');
+module.exports = {
+  Generator: require('./lib/Generator'),
+  GenPacker: require('./lib/GenPacker')
+};

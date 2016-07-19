@@ -8,14 +8,15 @@ const _ = require('lodash');
 const ora = require('ora');
 const getStdin = require('get-stdin');
 
+const toscafyBin = process.env.TOSCAFY_BIN || 'toscafy' || '$0';
+
 const yargs = require('yargs')
-  .usage('Usage: $0 [COMMAND] [OPTIONS]')
-  .example('$0 generate -o /my/csar-dir', 'Generate CSAR')
+  .usage(`Usage: ${toscafyBin} [COMMAND] [OPTIONS]`)
+  .example(`${toscafyBin} generate -o /my/csar-dir`, 'Generate CSAR')
 
   .command('generate', 'Generate TOSCA CSAR')
-  .command('g', 'Alias for generate')
+  .command('build', 'Alias for generate')
   .command('merge', 'Merge CSAR specs')
-  .command('m', 'Alias for merge')
   .demand(1, 'Valid command required')
   //.string('_')
 
@@ -42,11 +43,11 @@ const exit = (err, out) => {
 
 
 
-if (_.includes(['generate', 'g'], command)) {
+if (_.includes(['generate', 'build'], command)) {
   const argvGen = yargs.reset()
-    .usage('Usage: $0 generate | g [OPTIONS]') // PATH | URL | -
-    .example('$0 generate -o /my/csar-dir', 'Generate CSAR as directory')
-    .example('$0 g -p -o /my/csar.zip', 'Generate CSAR as ZIP file')
+    .usage(`Usage: ${toscafyBin} ${command} [OPTIONS]`) // PATH | URL | -
+    .example(`${toscafyBin} ${command} -o /my/csar-dir`)
+    .example(`${toscafyBin} ${command} -p -o /my/csar.zip`)
 
     .help('h')
     .alias('h', 'help')
@@ -170,7 +171,7 @@ if (_.includes(['generate', 'g'], command)) {
 
     generate(csarSpec);
   }
-} else if (_.includes(['merge', 'm'], command)) {
+} else if (_.includes(['merge'], command)) {
   exit(new Error('not implemented'));
 } else {
   yargs.showHelp();
