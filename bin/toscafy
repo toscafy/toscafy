@@ -11,17 +11,18 @@ const getStdin = require('get-stdin');
 const toscafyBin = process.env.TOSCAFY_BIN || 'toscafy' || '$0';
 
 const yargs = require('yargs')
-  .usage(`Usage: ${toscafyBin} [COMMAND] [OPTIONS]`)
+  .usage(`Usage: ${toscafyBin} COMMAND [OPTIONS]`)
   .example(`${toscafyBin} generate -o /my/csar-dir`, 'Generate CSAR')
 
-  .command('generate', 'Generate TOSCA CSAR')
-  .command('build', 'Alias for generate')
+  .command('specify', 'Produce CSAR spec for existing artifact')
   .command('merge', 'Merge CSAR specs')
+  .command('generate', 'Generate CSAR from CSAR spec')
+  .command('build', 'Alias for generate')
   .demand(1, 'Valid command required')
   //.string('_')
 
-  //.describe('debug', 'Debug mode, print error stacktrace')
   .boolean('debug')
+  .describe('debug', 'Enable debug mode')
   .global('debug'),
 
   argv = yargs.argv,
@@ -43,7 +44,11 @@ const exit = (err, out) => {
 
 
 
-if (_.includes(['generate', 'build'], command)) {
+if (_.includes(['specify'], command)) {
+  exit(new Error('not implemented'));
+} else if (_.includes(['merge'], command)) {
+  exit(new Error('not implemented'));
+} else if (_.includes(['generate', 'build'], command)) {
   const argvGen = yargs.reset()
     .usage(`Usage: ${toscafyBin} ${command} [OPTIONS]`) // PATH | URL | -
     .example(`${toscafyBin} ${command} -o /my/csar-dir`)
@@ -171,8 +176,6 @@ if (_.includes(['generate', 'build'], command)) {
 
     generate(csarSpec);
   }
-} else if (_.includes(['merge'], command)) {
-  exit(new Error('not implemented'));
 } else {
   yargs.showHelp();
 }

@@ -14,8 +14,8 @@
     "url": "git+https://github.com/toscafy/toscafy.git"
   },
   "keywords": [
-    "TOSCA",
-    "CSAR"
+    "tosca",
+    "csar"
   ],
   "author": "Johannes Wettinger <mail@jojow.de>",
   "license": "MIT",
