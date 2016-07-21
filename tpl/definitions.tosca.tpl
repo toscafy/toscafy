@@ -29,7 +29,7 @@
   <!-- Node Types -->
   <!-- ========== -->
 
-  <tosca:Import namespace="<%= spec.csar_namespace %>" location="./properties.xsd" importType="http://www.w3.org/2001/XMLSchema"/>
+  <tosca:Import namespace="<%= spec.csar_namespace %>" location="schema/<%= propertiesFilename %>" importType="http://www.w3.org/2001/XMLSchema"/>
 
   <% _.forEach(spec.node_types, function(nt, ntName) { %>
   <tosca:NodeType name="<%= ntName %>">
@@ -43,7 +43,7 @@
       <% }); %>
     </winery:PropertiesDefinition>
     <% } %>
-    <tosca:PropertiesDefinition type="tns:MySQLDBProperties"/>
+    <tosca:PropertiesDefinition type="tns:<%= ntName %>Properties"/>
     <% if (!_.isEmpty(nt.interfaces)) { %>
     <tosca:Interfaces>
       <% _.forEach(nt.interfaces, function(iface, ifaceName) { %>
