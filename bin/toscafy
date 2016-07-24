@@ -21,19 +21,24 @@ const yargs = require('yargs')
   .demand(1, 'Valid command required')
   //.string('_')
 
-  .boolean('debug')
-  .describe('debug', 'Enable debug mode')
-  .global('debug'),
+  .help('h')
+  .alias('h', 'help')
+  .global('h')
+
+  .boolean('D')
+  .describe('D', 'Enable debug mode')
+  .alias('D', 'debug')
+  .global('D'),
 
   argv = yargs.argv,
   command = _.first(argv._);
 
 const exit = (err, out) => {
   if (err && argv.debug) {
-    console.log(err.toString());
+    console.error(err.toString());
     throw err;
   } else if (err) {
-    console.log(err.toString());
+    console.error(err.toString());
     process.exit(1);
   } else if (out) {
     console.log(out);
@@ -45,7 +50,53 @@ const exit = (err, out) => {
 
 
 if (_.includes(['specify'], command)) {
-  exit(new Error('not implemented'));
+  const argvSpec = yargs.reset()
+    .usage(`Usage: ${toscafyBin} ${command} [OPTIONS]`)
+    //.example(`${toscafyBin} ${command} -o /my/csar-dir`)
+
+    .string('i')
+    .describe('i', 'Path or reference to artifact')
+    .alias('i', 'input')
+    .nargs('i', 1)
+
+    .string('o')
+    .describe('o', 'Path to output file, use - for stdout')
+    .alias('o', 'output')
+    .normalize('o')
+    .nargs('o', 1)
+
+    .string('artifact-type')
+    .describe('artifact-type', 'Type of artifact')
+    .nargs('artifact-type', 1)
+
+    .argv;
+
+  argvSpec.input = argvSpec.input || process.cwd();
+  argvSpec.output = argvSpec.output || '-';
+
+  if (argvSpec.output !== '-' && argvSpec.clearOutput) fs.removeSync(argvSpec.output);
+
+  const SpecProducer = require('../lib/SpecProducer');
+
+  let spinner;
+
+  if (argvSpec.output !== '-') spinner = ora('Producing CSAR spec for artifact ' + argvSpec.input).start();
+
+  SpecProducer().produce(argvSpec.input, {
+    artifactType: argvSpec.artifactType
+  }, (err, csarSpec) => {
+    if (spinner) spinner.clear();
+
+    if (err) {
+      exit(err);
+    } else if (argvSpec.output === '-') {
+      exit(err, JSON.stringify(csarSpec, null, 2));
+    } else {
+      fs.writeFile(JSON.stringify(csarSpec, null, 2), (err) => {
+        exit(err, argvSpec.output);
+      });
+    }
+  });
 } else if (_.includes(['merge'], command)) {
   exit(new Error('not implemented'));
 } else if (_.includes(['generate', 'build'], command)) {
@@ -53,9 +104,6 @@ if (_.includes(['specify'], command)) {
     .usage(`Usage: ${toscafyBin} ${command} [OPTIONS]`) // PATH | URL | -
     .example(`${toscafyBin} ${command} -o /my/csar-dir`)
     .example(`${toscafyBin} ${command} -p -o /my/csar.zip`)
-
-    .help('h')
-    .alias('h', 'help')
 
     .string('s')
     .describe('s', 'Path to CSAR spec, use - for stdin')
@@ -96,7 +144,7 @@ if (_.includes(['specify'], command)) {
     .argv;
 
   const generate = (csarSpec) => {
-    if (argvGen.output && argvGen.clearOutput) fs.removeSync(argvGen.output);
+    if (argvGen.output !== '-' && argvGen.clearOutput) fs.removeSync(argvGen.output);
 
     if (argvGen.output === '-') {
       const GenPacker = require('../lib/GenPacker');
@@ -142,8 +190,6 @@ if (_.includes(['specify'], command)) {
     }
   };
 
-  argvGen.context = argvGen.context || process.cwd();
-
   if (argvGen.spec === '-') {
     getStdin().then(stdin => {
       try {
@@ -157,6 +203,7 @@ if (_.includes(['specify'], command)) {
       exit(new Error('cannot parse stdin as JSON, ' + err));
     });
   } else {
+    argvGen.context = argvGen.context || process.cwd();
     argvGen.spec = argvGen.spec || path.join(argvGen.context, 'csarspec.json');
     argvGen.spec = path.resolve(argvGen.spec);
 

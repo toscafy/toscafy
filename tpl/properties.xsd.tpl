@@ -7,7 +7,7 @@
     <complexType>
       <sequence xmlns:xsd="http://www.w3.org/2001/XMLSchema">
         <% _.forEach(nt.properties_schema, function(p, pName) { %>
-        <element name="<%= pName %>" type="<%= p.type %>" <% if (p.default) { %>default="<%= p.default %>"<% } %> minOccurs="0" maxOccurs="1"/>
+        <element name="<%= pName %>" type="<%= p.type %>" <% if (p.default && _.isString(p.default)) { %>default="<%= p.default %>"<% } %> minOccurs="0" maxOccurs="1"/>
         <% }); %>
         <any minOccurs="0" maxOccurs="unbounded" namespace="##targetNamespace"/>
       </sequence>

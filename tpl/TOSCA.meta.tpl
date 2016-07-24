@@ -12,7 +12,7 @@ Content-Type: text/xml
 Name: csarspec.json
 Content-Type: application/json
 
-<% _.forEach(files, function(file) { %>
+<% _.forEach(files, function(file) { if (!_.endsWith(file, '/')) { %>
 Name: <%= file %>
 Content-Type: application/octet-stream
-<% }); %>
+<% } }); %>

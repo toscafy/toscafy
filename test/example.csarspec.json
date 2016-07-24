@@ -24,9 +24,11 @@
       "deployment_artifact": {
         "type": "WAR",
         "properties": {
-          "ServiceEndpoint": "/services/org_opentosca_NodeTypes_UbuntuPort",
-          "PortType": "{http://opentosca.org/NodeTypes}org_opentosca_NodeTypes_Ubuntu",
-          "InvocationType": "SOAP/HTTP"
+          "WSProperties": {
+            "ServiceEndpoint": "/services/org_opentosca_NodeTypes_UbuntuPort",
+            "PortType": "{http://opentosca.org/NodeTypes}org_opentosca_NodeTypes_Ubuntu",
+            "InvocationType": "SOAP/HTTP"
+          }
         },
         "references": [
           "some-dir/test2.txt"
@@ -38,9 +40,11 @@
     "apache_install": {
       "type": "WAR",
       "properties": {
-        "ServiceEndpoint": "/services/org_opentosca_NodeTypes_UbuntuPort",
-        "PortType": "{http://opentosca.org/NodeTypes}org_opentosca_NodeTypes_Ubuntu",
-        "InvocationType": "SOAP/HTTP"
+        "WSProperties": {
+          "ServiceEndpoint": "/services/org_opentosca_NodeTypes_UbuntuPort",
+          "PortType": "{http://opentosca.org/NodeTypes}org_opentosca_NodeTypes_Ubuntu",
+          "InvocationType": "SOAP/HTTP"
+        }
       },
       "references": [
         { "$toscafy.fetchAsFile": "https://gist.githubusercontent.com/jojow/0e5f6cea3d052999b662b60ad37f6d2f/raw/212ddd43f4372b95bb334aa94755412bc93cc117/opal-clus.metadata.json", "filename": "opal-clus.metadata.json" },
@@ -92,5 +96,8 @@
   "t6": { "$toscafy.embedFileAsBase64": "some-script.sh" },
 
   "t7": { "$toscafy.embedDirAsZipBase64": "some-dir" },
-  "t8": { "$toscafy.embedDirAsTgzBase64": "some-dir" }
+  "t8": { "$toscafy.embedDirAsTgzBase64": "some-dir" },
+
+  "t9": { "$toscafy.addDir": "some-dir", "dirname": "another-dir" },
+  "t10": { "$toscafy.addFile": "some-script.sh", "filename": "another-script.sh" }
 }

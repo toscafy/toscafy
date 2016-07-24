@@ -1,10 +1,10 @@
 {
   "name": "toscafy",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Generate TOSCA CSARs from csarspec.json files",
   "main": "index.js",
   "scripts": {
-    "test": "bin/toscafy generate --debug -o test/out -c test -s test/example.csarspec.json --camelize --clear-output ; cat test/out/Definitions/definitions.tosca ; rm -rf test/out"
+    "test": "bin/toscafy generate --debug -o test-out -c test -s test/example.csarspec.json --camelize --clear-output ; cat test-out/Definitions/definitions.tosca ; rm -rf test-out"
   },
   "bin": {
     "toscafy": "bin/toscafy"
@@ -26,6 +26,7 @@
   "dependencies": {
     "archiver": "^1.0.0",
     "async": "^2.0.0",
+    "data2xml": "^1.2.5",
     "fs-extra": "^0.30.0",
     "get-stdin": "^5.0.1",
     "get-stream": "^2.3.0",

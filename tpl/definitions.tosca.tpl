@@ -106,17 +106,9 @@
   <tosca:ArtifactTemplate xmlns:at="<%= art.namespace %>" xmlns="<%= art.namespace %>" id="<%= artName %>" type="at:<%= art.type %>">
     <% if (!_.isEmpty(art.properties)) { %>
     <tosca:Properties>
-      <% if ('WAR' === art.type) { %>
-      <ot:WSProperties xmlns:ot="http://www.uni-stuttgart.de/opentosca" xmlns="http://www.uni-stuttgart.de/opentosca">
-        <% _.forEach(art.properties, function(pValue, pName) { %>
-        <<%= pName %>><%= pValue %></<%= pName %>>
-        <% }); %>
-      </ot:WSProperties>
-      <% } else { %>
-      <% _.forEach(art.properties, function(pValue, pName) { %>
-      <<%= pName %>><%= pValue %></<%= pName %>>
+      <% _.forEach(art.properties, function(prop) { %>
+      <%= prop %>
       <% }); %>
-      <% } %>
     </tosca:Properties>
     <% } %>
     <% if (!_.isEmpty(art.references)) { %>
@@ -141,8 +133,8 @@
         <% if (!_.isEmpty(n.properties)) { %>
         <tosca:Properties>
           <tns:<%= n.type %>Properties xmlns="<%= spec.csar_namespace %>">
-            <% _.forEach(n.properties, function(pValue, pName) { %>
-            <<%= pName %>><%= pValue %></<%= pName %>>
+            <% _.forEach(n.properties, function(prop) { %>
+            <%= prop %>
             <% }); %>
           </tns:<%= n.type %>Properties>
         </tosca:Properties>
