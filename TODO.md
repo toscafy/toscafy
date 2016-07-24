@@ -3,7 +3,6 @@
 * core toscafy project contains lib+cli+api to generate CSARs, merge CSARs, generate topologies, ...
 
 * add flag to ntPropSchema to map to ops params: output vs. input vs. input+output
-* replace request by got module
 
 
 
