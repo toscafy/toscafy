@@ -10,6 +10,10 @@
         "UseSSL": {
           "type": "boolean",
           "default": "true"
+        },
+        "logs": {
+          "type": "string",
+          "output": "install"
         }
       },
       "operations": {

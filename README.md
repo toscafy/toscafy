@@ -42,14 +42,20 @@ A `csarspec.json` file is structured as follows:
 
 ``` plaintext
 {
-  "csar_name":       (string),   # name of CSAR
+  "csar_name":       (string),    # name of CSAR
 
   "node_types": {
     (nodeTypeName): {
       "properties_schema": {
         (nodeTypePropertyName): {
-          "type":    (string),   # XSD type
-          "default": (string)    # default value
+          "type":    (string),    # XSD type
+          "default": (string),    # default value
+          "input": [              # map input param
+            (operationName) | "*"
+          ],
+          "output": [             # map output param
+            (operationName) | "*"
+          ]
         }
       },
 
@@ -74,7 +80,7 @@ A `csarspec.json` file is structured as follows:
       },
 
       "references": [
-        (string)          # file path
+        (string)          # relative file path
       ]
     }
   },

@@ -50,14 +50,20 @@
       <tosca:Interface name="<%= ifaceName %>">
         <% _.forEach(iface.operations, function(op, opName) { %>
         <tosca:Operation name="<%= opName %>">
+          <% if (_.includes(nt.has_input_parameters, opName)) { %>
           <tosca:InputParameters>
-            <% _.forEach(nt.properties_schema, function(p, pName) { %>
+            <% _.forEach(nt.properties_schema, function(p, pName) { if (_.includes(p.input, opName)) { %>
             <tosca:InputParameter name="<%= pName %>" type="<%= p.type %>"/> <!-- required="yes" -->
-            <% }); %>
+            <% } }); %>
           </tosca:InputParameters>
+          <% } %>
+          <% if (_.includes(nt.has_output_parameters, opName)) { %>
           <tosca:OutputParameters>
-            <tosca:OutputParameter name="logs" type="xsd:string"/>
+            <% _.forEach(nt.properties_schema, function(p, pName) { if (_.includes(p.output, opName)) { %>
+            <tosca:OutputParameter name="<%= pName %>" type="<%= p.type %>"/>
+            <% } }); %>
           </tosca:OutputParameters>
+          <% } %>
         </tosca:Operation>
         <% }); %>
       </tosca:Interface>
