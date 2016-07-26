@@ -184,5 +184,5 @@ Currently, the following built-in functions are provided:
 * `$toscafy.embedFileAsText` embeds the content of a local file into the CSAR spec as text
 * `$toscafy.embedFileAsJson` embeds the content of a local file into the CSAR spec as JSON
 * `$toscafy.embedFileAsBase64` embeds the content of a local file into the CSAR spec as Base64 string
-* `$toscafy.embedDirAsZipBase64` embeds the content of a local directory (zip-compressed) into the CSAR spec as Base64 string
-* `$toscafy.embedDirAsTgzBase64` embeds the content of a local directory (tar-gz-compressed) into the CSAR spec as Base64 string
+* `$toscafy.embedDirAsZipBase64` embeds the content of a local directory (zip compressed) into the CSAR spec as Base64 string
+* `$toscafy.embedDirAsTgzBase64` embeds the content of a local directory (tar-gz compressed) into the CSAR spec as Base64 string

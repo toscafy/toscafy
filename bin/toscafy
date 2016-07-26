@@ -15,7 +15,6 @@ const yargs = require('yargs')
   .example(`${toscafyBin} generate -o /my/csar-dir`, 'Generate CSAR')
 
   .command('specify', 'Produce CSAR spec for existing artifact')
-  .command('merge', 'Merge CSAR specs')
   .command('generate', 'Generate CSAR from CSAR spec')
   .command('build', 'Alias for generate')
   .demand(1, 'Valid command required')
@@ -97,8 +96,6 @@ if (_.includes(['specify'], command)) {
       });
     }
   });
-} else if (_.includes(['merge'], command)) {
-  exit(new Error('not implemented'));
 } else if (_.includes(['generate', 'build'], command)) {
   const argvGen = yargs.reset()
     .usage(`Usage: ${toscafyBin} ${command} [OPTIONS]`) // PATH | URL | -
