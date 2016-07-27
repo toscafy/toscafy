@@ -38,7 +38,8 @@
           "some-dir/test2.txt"
         ]
       }
-    }
+    },
+    "AnotherNodeType": { "$toscafy.embedFileAsJson": "some-dir/some-node-type.csarspec.json" }
   },
   "artifacts": {
     "apache_install": {

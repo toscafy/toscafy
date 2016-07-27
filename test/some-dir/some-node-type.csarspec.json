@@ -1,0 +1,9 @@
+{
+  "deployment_artifact": {
+    "type": "WAR",
+    "references": [
+      { "$toscafy.fetchAsFile": "https://gist.githubusercontent.com/jojow/0e5f6cea3d052999b662b60ad37f6d2f/raw/212ddd43f4372b95bb334aa94755412bc93cc117/opal-clus.metadata.json", "filename": "opal-clus.metadata.json" },
+      "sub-dir/test3.txt"
+    ]
+  }
+}
