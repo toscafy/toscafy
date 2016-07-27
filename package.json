@@ -4,7 +4,8 @@
   "description": "Generate TOSCA CSARs from csarspec.json files",
   "main": "index.js",
   "scripts": {
-    "test": "bin/toscafy generate --debug -o test-out -c test -s test/example.csarspec.json --camelize --clear-output ; cat test-out/Definitions/definitions.tosca ; rm -rf test-out"
+    "test": "sh test/smoketest-cli.sh",
+    "start": "node bin/server"
   },
   "bin": {
     "toscafy": "bin/toscafy"
@@ -26,7 +27,10 @@
   "dependencies": {
     "archiver": "^1.0.0",
     "async": "^2.0.0",
+    "body-parser": "^1.15.2",
     "data2xml": "^1.2.5",
+    "decompress": "^4.0.0",
+    "express": "^4.14.0",
     "fs-extra": "^0.30.0",
     "get-stdin": "^5.0.1",
     "get-stream": "^2.3.0",
@@ -34,6 +38,7 @@
     "got": "^6.3.0",
     "ignore": "^3.1.3",
     "lodash": "^4.13.1",
+    "multer": "^1.1.0",
     "ora": "^0.2.3",
     "prettify-xml": "^1.0.0",
     "shortid": "^2.2.6",
