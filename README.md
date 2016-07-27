@@ -11,6 +11,8 @@ Thus, it is enough to store the CSAR spec and all related files such as scripts 
 An associated CI/CD pipeline could then rebuild, test, and publish the resulting CSARs when changes are committed.
 This helps to apply established CI/CD principles by automating the build and delivery process of CSARs.
 
+
+
 ## Get started
 
 First, you need to install **toscafy**.
@@ -33,6 +35,20 @@ Alternatively, you could produce a CSAR that's already packaged as single ZIP fi
 Instead of installing **toscafy** on your machine, you can immediately run it using Docker:
 
     docker run toscafy/cli --help
+
+
+
+## REST API server
+
+You can also use the REST API server to interact or programmatically integrate with **toscafy**:
+
+    toscafy server
+
+Alternatively using Docker:
+
+    docker run -p 3000:3000 toscafy/cli server
+
+By default, the server listens on port `3000` for HTTP requests.
 
 
 

@@ -17,6 +17,7 @@ const yargs = require('yargs')
   .command('specify', 'Produce CSAR spec for existing artifact')
   .command('generate', 'Generate CSAR from CSAR spec')
   .command('build', 'Alias for generate')
+  .command('server', 'Start API server')
   .demand(1, 'Valid command required')
   //.string('_')
 
@@ -220,6 +221,8 @@ if (_.includes(['specify'], command)) {
 
     generate(csarSpec);
   }
+} else if (_.includes(['server'], command)) {
+  require('./server');
 } else {
   yargs.showHelp();
 }
