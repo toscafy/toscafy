@@ -1,5 +1,232 @@
-//TODO process file uploads:
-// * https://www.npmjs.com/package/multiparty
-// * https://www.npmjs.com/package/multer
+#!/usr/bin/env node
 
-//TODO test file uploads: https://www.npmjs.com/package/form-data
+'use strict';
+
+const os = require('os');
+const path = require('path');
+const fs = require('fs-extra');
+const shortid = require('shortid');
+const express = require('express');
+const bodyParser = require('body-parser');
+const jsonParser = bodyParser.json();
+const _ = require('lodash');
+const async = require('async');
+const multer = require('multer'); // alternative: https://www.npmjs.com/package/multiparty
+const decompress = require('decompress');
+
+const specProducer = require('../lib/SpecProducer')();
+const genPacker = require('../lib/GenPacker')();
+
+const appPort = process.env.PORT || 3000;
+const uploadsDir = process.env.UPLOADS_DIR || path.join(process.cwd(), 'uploads');
+
+const upload = multer({ dest: uploadsDir });
+const app = express();
+
+const jobs = {};
+const csarspecs = {};
+const csars = {};
+
+
+
+app.get('/', (req, res) => {
+  res.send('toscafy server');
+});
+
+app.post('/commands/specify', jsonParser, (req, res) => {
+  const id = _.camelCase(shortid.generate());
+
+  jobs[id] = {
+    id: id,
+    created: new Date().toString(),
+    status: 'running',
+    input: req.body.input || req.query.input,
+    artifactType: req.body.artifactType || req.query.artifactType,
+    links: {
+      self: '/jobs/' + id
+    }
+  };
+
+  res.redirect('/jobs/' + id);
+
+  specProducer.produce(jobs[id].input, {
+    artifactType: jobs[id].artifactType
+  }, (err, csarspec) => {
+    jobs[id].finished = new Date().toString();
+
+    if (err) {
+      jobs[id].status = 'failed';
+      jobs[id].error = err.toString();
+
+      console.log(err.stack);
+    } else {
+      jobs[id].status = 'finished';
+      jobs[id].links.csarspec = '/csarspecs/' + id;
+
+      csarspecs[id] = csarspec;
+    }
+  });
+});
+
+const uploadHandler = upload.fields([{ name: 'context', maxCount: 1 }, { name: 'csarspec', maxCount: 1 }]);
+app.post('/commands/generate', uploadHandler, (req, res, next) => {
+  const id = _.camelCase(shortid.generate());
+
+  req.body = req.body || {};
+
+  jobs[id] = {
+    id: id,
+    created: new Date().toString(),
+    status: 'running',
+    packFormat: req.body.packFormat || req.query.packFormat || 'zip',
+    strip: req.body.strip || req.query.strip,
+    camelize: req.body.camelize || req.query.camelize,
+    links: {
+      self: '/jobs/' + id
+    }
+  };
+
+  jobs[id].strip = _.toInteger(jobs[id].strip);
+
+  if (jobs[id].camelize === 'true') jobs[id].camelize = true;
+  else jobs[id].camelize = false;
+
+  res.redirect('/jobs/' + id);
+
+  let context;
+  let csarspec = csarspecs[req.body.csarspecId || req.query.csarspecId] || {};
+
+  try {
+    if (req.body.csarspec) csarspec = JSON.parse(req.body.csarspec);
+  } catch (err) {
+    return done(new Error('cannot parse CSAR spec: ' + err));
+  }
+
+  async.series([
+    function(done) {
+      if (_.isEmpty(req.files.csarspec) || !_.isEmpty(csarspec)) return done();
+
+      fs.readFile(_.first(req.files.csarspec).path, 'utf8', (err, content) => {
+        if (err) return done(new Error('cannot read csarspec.json file: ' + err));
+
+        try {
+          csarspec = JSON.parse(content);
+        } catch (err) {
+          return done(new Error('cannot parse CSAR spec: ' + err));
+        }
+
+        done();
+      });
+    },
+    function(done) {
+      if (_.isEmpty(req.files.context)) return done();
+
+      context = path.join(os.tmpdir(), 'toscafy-context-' + id);
+
+      decompress(_.first(req.files.context).path, context, { strip: jobs[id].strip }).then(files => {
+        if (_.isEmpty(files)) return done(new Error('context seems to be empty or it is not a valid tar file'));
+
+        jobs[id].context = _.map(files, (f) => {
+          if (f.type === 'directory' && !_.endsWith(f.path, '/')) return f.path + '/';
+          else return f.path;
+        });
+
+        done();
+      }).catch(done);
+    },
+    function(done) {
+      if (!context && _.isEmpty(csarspec)) {
+        done(new Error('CSAR spec and context missing'));
+      } else if (context && _.isEmpty(csarspec)) {
+        fs.readFile(path.join(context, 'csarspec.json'), 'utf8', (err, content) => {
+          if (err) return done(new Error('cannot read csarspec.json file from context: ' + err));
+
+          try {
+            csarspec = JSON.parse(content);
+          } catch (err) {
+            return done(new Error('cannot parse csarspec.json file from context: ' + err));
+          }
+
+          done();
+        });
+      } else {
+        done();
+      }
+    },
+    function(done) {
+      jobs[id].csarspec = _.cloneDeep(csarspec);
+
+      genPacker.genpack(csarspec, {
+        workingDir: context,
+        camelize: jobs[id].camelize,
+        format: jobs[id].packFormat
+      }, (err, outputFile) => {
+        if (err) return done(err);
+
+        csars[id + '.' + jobs[id].packFormat] = outputFile;
+
+        done();
+      });
+    }
+  ], (err) => {
+    jobs[id].finished = new Date().toString();
+
+    if (err) {
+      jobs[id].status = 'failed';
+      jobs[id].error = err.toString();
+
+      console.log(err.stack);
+    } else {
+      jobs[id].status = 'finished';
+      jobs[id].links.csar = '/csars/' + id + '.' + jobs[id].packFormat;
+    }
+  });
+});
+
+app.get('/jobs/:id', (req, res) => {
+  if (jobs[req.params.id]) res.json(jobs[req.params.id]);
+  else res.status(404).send('job does not exist: ' + req.params.id);
+});
+
+app.get('/csarspecs/:id', (req, res) => {
+  if (csarspecs[req.params.id]) res.json(csarspecs[req.params.id]);
+  else res.status(404).send('CSAR spec does not exist: ' + req.params.id);
+});
+
+app.get('/csars/:id', (req, res) => {
+  if (csars[req.params.id]) {
+    res.sendFile(csars[req.params.id], (err) => {
+      if (err) {
+        console.log(err.stack);
+        res.status(err.status).end();
+      }
+    });
+  } else {
+    res.status(404).send('CSAR does not exist: ' + req.params.id);
+  }
+});
+
+app.use((err, req, res, next) => {
+  console.log(err.stack);
+  res.status(500).send('error occurred, please check the logs');
+});
+
+app.listen(appPort, () => {
+  console.log('toscafy server listening on port ' + appPort);
+});
+
+
+
+// cleanup on exit
+const exit = (err) => {
+  if (err) console.log(err.stack);
+
+  fs.removeSync(uploadsDir);
+
+  process.exit();
+};
+
+process.on('exit', exit);
+process.on('uncaughtException', exit);
+process.on('SIGTERM', exit);
+process.on('SIGINT', exit);
