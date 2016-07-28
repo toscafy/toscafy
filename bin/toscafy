@@ -133,6 +133,9 @@ if (_.includes(['specify'], command)) {
     .default('pack-format', 'zip')
     .nargs('pack-format', 1)
 
+    .boolean('refs-only')
+    .describe('refs-only', 'Include referenced files only')
+
     .boolean('camelize')
     .describe('camelize', 'Convert names to camelCase')
 
@@ -150,6 +153,7 @@ if (_.includes(['specify'], command)) {
       GenPacker().genpack(csarSpec, {
         workingDir: argvGen.context,
         outputStream: process.stdout,
+        refsOnly: argvGen.refsOnly,
         camelize: argvGen.camelize,
         format: argvGen.packFormat
       }, exit);
@@ -161,6 +165,7 @@ if (_.includes(['specify'], command)) {
       GenPacker().genpack(csarSpec, {
         workingDir: argvGen.context,
         outputFile: argvGen.output,
+        refsOnly: argvGen.refsOnly,
         camelize: argvGen.camelize,
         format: argvGen.packFormat
       }, (err, outputFile) => {
@@ -180,6 +185,7 @@ if (_.includes(['specify'], command)) {
       Generator().generate(csarSpec, {
         workingDir: argvGen.context,
         outputDir: argvGen.output,
+        refsOnly: argvGen.refsOnly,
         camelize: argvGen.camelize
       }, (err, outputDir) => {
         spinner.clear();

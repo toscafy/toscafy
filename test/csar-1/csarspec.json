@@ -23,10 +23,11 @@
     },
     "MySQL": {
       "operations": {
-        "install": "mysql_install"
+        "install, configure": "mysql_install"
       },
       "deployment_artifact": {
         "type": "WAR",
+        "artifact_name": "special-artifact-name",
         "properties": {
           "WSProperties": {
             "ServiceEndpoint": "/services/org_opentosca_NodeTypes_UbuntuPort",

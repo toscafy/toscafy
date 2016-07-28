@@ -82,6 +82,7 @@ app.post('/commands/generate', uploadHandler, (req, res, next) => {
     status: 'running',
     packFormat: req.body.packFormat || req.query.packFormat || 'zip',
     strip: req.body.strip || req.query.strip,
+    refsOnly: req.body.refsOnly || req.query.refsOnly,
     camelize: req.body.camelize || req.query.camelize,
     links: {
       self: '/jobs/' + id
@@ -89,6 +90,9 @@ app.post('/commands/generate', uploadHandler, (req, res, next) => {
   };
 
   jobs[id].strip = _.toInteger(jobs[id].strip);
+
+  if (jobs[id].refsOnly === 'true') jobs[id].refsOnly = true;
+  else jobs[id].refsOnly = false;
 
   if (jobs[id].camelize === 'true') jobs[id].camelize = true;
   else jobs[id].camelize = false;
@@ -160,6 +164,7 @@ app.post('/commands/generate', uploadHandler, (req, res, next) => {
 
       genPacker.genpack(csarspec, {
         workingDir: context,
+        refsOnly: jobs[id].refsOnly,
         camelize: jobs[id].camelize,
         format: jobs[id].packFormat
       }, (err, outputFile) => {
