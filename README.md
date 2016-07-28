@@ -46,7 +46,7 @@ You can also use the REST API server to interact or programmatically integrate w
 
 Alternatively using Docker:
 
-    docker run -p 3000:3000 toscafy/cli server
+    docker run -p 3000:3000 toscafy/server
 
 By default, the server listens on port `3000` for HTTP requests.
 
