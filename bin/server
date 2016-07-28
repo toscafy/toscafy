@@ -38,6 +38,7 @@ app.post('/commands/specify', jsonParser, (req, res) => {
 
   jobs[id] = {
     id: id,
+    command: 'specify',
     created: new Date().toString(),
     status: 'running',
     input: req.body.input || req.query.input,
@@ -76,6 +77,7 @@ app.post('/commands/generate', uploadHandler, (req, res, next) => {
 
   jobs[id] = {
     id: id,
+    command: 'generate',
     created: new Date().toString(),
     status: 'running',
     packFormat: req.body.packFormat || req.query.packFormat || 'zip',
