@@ -3,7 +3,7 @@
 
   <% _.forEach(spec.node_types, function(nt, ntName) { %>
   <% if (!_.isEmpty(nt.properties_schema)) { %>
-  <element name="<%= ntName %>Properties">
+  <element name="<%= ntName %>_Properties">
     <complexType>
       <sequence xmlns:xsd="http://www.w3.org/2001/XMLSchema">
         <% _.forEach(nt.properties_schema, function(p, pName) { %>

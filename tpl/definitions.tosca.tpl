@@ -34,7 +34,7 @@
   <% _.forEach(spec.node_types, function(nt, ntName) { %>
   <tosca:NodeType name="<%= ntName %>">
     <% if (!_.isEmpty(nt.properties_schema)) { %>
-    <winery:PropertiesDefinition elementname="<%= ntName %>Properties" namespace="<%= spec.csar_namespace %>">
+    <winery:PropertiesDefinition elementname="<%= ntName %>_Properties" namespace="<%= spec.csar_namespace %>">
       <% _.forEach(nt.properties_schema, function(p, pName) { %>
       <winery:properties>
         <winery:key><%= pName %></winery:key>
@@ -43,7 +43,7 @@
       <% }); %>
     </winery:PropertiesDefinition>
     <% } %>
-    <tosca:PropertiesDefinition type="tns:<%= ntName %>Properties"/>
+    <tosca:PropertiesDefinition type="tns:<%= ntName %>_Properties"/>
     <% if (!_.isEmpty(nt.interfaces)) { %>
     <tosca:Interfaces>
       <% _.forEach(nt.interfaces, function(iface, ifaceName) { %>
@@ -138,11 +138,11 @@
       <tosca:NodeTemplate name="<%= nName %>" minInstances="1" maxInstances="1" id="<%= nName %>" type="tns:<%= n.type %>">
         <% if (!_.isEmpty(n.properties)) { %>
         <tosca:Properties>
-          <tns:<%= n.type %>Properties xmlns="<%= spec.csar_namespace %>">
+          <tns:<%= n.type %>_Properties xmlns="<%= spec.csar_namespace %>">
             <% _.forEach(n.properties, function(prop) { %>
             <%= prop %>
             <% }); %>
-          </tns:<%= n.type %>Properties>
+          </tns:<%= n.type %>_Properties>
         </tosca:Properties>
         <% } %>
         <% if (!_.isEmpty(n.deployment_artifacts)) { %>
