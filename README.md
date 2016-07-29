@@ -90,6 +90,7 @@ A `csarspec.json` file is structured as follows:
   "artifacts": {
     (artifactName): {
       "type": (string),   # artifact type
+      "wrap": (string),   # wrap artifact as ...
 
       "properties": {
         (artifactPropertyName): (any)

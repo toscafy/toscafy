@@ -69,6 +69,10 @@ if (_.includes(['specify'], command)) {
     .describe('artifact-type', 'Type of artifact')
     .nargs('artifact-type', 1)
 
+    .string('wrap')
+    .describe('wrap', 'Wrap artifact as rest-api, soap-api, ...')
+    .nargs('wrap', 1)
+
     .argv;
 
   argvSpec.input = argvSpec.input || process.cwd();
@@ -83,7 +87,8 @@ if (_.includes(['specify'], command)) {
   if (argvSpec.output !== '-') spinner = ora('Producing CSAR spec for artifact ' + argvSpec.input).start();
 
   SpecProducer().produce(argvSpec.input, {
-    artifactType: argvSpec.artifactType
+    artifactType: argvSpec.artifactType,
+    wrap: argvSpec.wrap
   }, (err, csarspec) => {
     if (spinner) spinner.clear();
 
@@ -136,9 +141,6 @@ if (_.includes(['specify'], command)) {
     .boolean('refs-only')
     .describe('refs-only', 'Include referenced files only, not entire context')
 
-    .boolean('api-wrap')
-    .describe('api-wrap', 'Wrap artifacts as SOAP APIs')
-
     .boolean('camelize')
     .describe('camelize', 'Convert names to camelCase')
 
@@ -157,7 +159,6 @@ if (_.includes(['specify'], command)) {
         workingDir: argvGen.context,
         outputStream: process.stdout,
         refsOnly: argvGen.refsOnly,
-        apiWrap: argvGen.apiWrap,
         camelize: argvGen.camelize,
         format: argvGen.packFormat
       }, exit);
@@ -170,7 +171,6 @@ if (_.includes(['specify'], command)) {
         workingDir: argvGen.context,
         outputFile: argvGen.output,
         refsOnly: argvGen.refsOnly,
-        apiWrap: argvGen.apiWrap,
         camelize: argvGen.camelize,
         format: argvGen.packFormat
       }, (err, outputFile) => {
@@ -191,7 +191,6 @@ if (_.includes(['specify'], command)) {
         workingDir: argvGen.context,
         outputDir: argvGen.output,
         refsOnly: argvGen.refsOnly,
-        apiWrap: argvGen.apiWrap,
         camelize: argvGen.camelize
       }, (err, outputDir) => {
         spinner.clear();
