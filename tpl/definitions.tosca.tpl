@@ -43,7 +43,7 @@
       <% }); %>
     </winery:PropertiesDefinition>
     <% } %>
-    <tosca:PropertiesDefinition type="tns:<%= ntName %>_Properties"/>
+    <tosca:PropertiesDefinition element="tns:<%= ntName %>_Properties"/>
     <% if (!_.isEmpty(nt.interfaces)) { %>
     <tosca:Interfaces>
       <% _.forEach(nt.interfaces, function(iface, ifaceName) { %>

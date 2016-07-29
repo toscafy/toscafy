@@ -29,11 +29,9 @@
         "type": "WAR",
         "artifact_name": "special-artifact-name",
         "properties": {
-          "WSProperties": {
-            "ServiceEndpoint": "/services/org_opentosca_NodeTypes_UbuntuPort",
-            "PortType": "{http://opentosca.org/NodeTypes}org_opentosca_NodeTypes_Ubuntu",
-            "InvocationType": "SOAP/HTTP"
-          }
+          "ServiceEndpoint": "/services/org_opentosca_NodeTypes_UbuntuPort",
+          "PortType": "{http://opentosca.org/NodeTypes}org_opentosca_NodeTypes_Ubuntu",
+          "InvocationType": "SOAP/HTTP"
         },
         "references": [
           "some-dir/test2.txt"

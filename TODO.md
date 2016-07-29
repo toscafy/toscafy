@@ -7,7 +7,7 @@
     * interact with (dockerized?) any2api-cli
     * derive apispec.json from artifact-spec.json
   * CLI+REST: add any2api/apify subcommand/parameter
-  * enhance soap generator:
+  * fork soap generator:
     * additional port type and service for TOSCA (lifecycle) operations
     * async callback, see invoker.wsdl: https://github.com/OpenTOSCA/container/tree/fddb5668c7be4b6b6985f2a110897a0d151b4d39/org.opentosca.planbuilder.provphase.plugin.invoker/META-INF/resources
     * flat properties without instance object
