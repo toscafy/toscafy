@@ -74,7 +74,7 @@
 
 
   <% if (nt.has_implementation_artifacts || !_.isEmpty(nt.deployment_artifacts)) { %>
-  <tosca:NodeTypeImplementation name="<%= ntName %>Impl" nodeType="tns:<%= ntName %>">
+  <tosca:NodeTypeImplementation name="<%= ntName %>_Impl" nodeType="tns:<%= ntName %>">
     <% if (nt.has_implementation_artifacts) { %>
     <tosca:ImplementationArtifacts>
       <% _.forEach(nt.interfaces, function(iface, ifaceName) { %>
