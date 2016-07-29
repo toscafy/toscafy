@@ -84,15 +84,15 @@ if (_.includes(['specify'], command)) {
 
   SpecProducer().produce(argvSpec.input, {
     artifactType: argvSpec.artifactType
-  }, (err, csarSpec) => {
+  }, (err, csarspec) => {
     if (spinner) spinner.clear();
 
     if (err) {
       exit(err);
     } else if (argvSpec.output === '-') {
-      exit(err, JSON.stringify(csarSpec, null, 2));
+      exit(err, JSON.stringify(csarspec, null, 2));
     } else {
-      fs.writeFile(JSON.stringify(csarSpec, null, 2), (err) => {
+      fs.writeFile(JSON.stringify(csarspec, null, 2), (err) => {
         exit(err, argvSpec.output);
       });
     }
@@ -134,7 +134,10 @@ if (_.includes(['specify'], command)) {
     .nargs('pack-format', 1)
 
     .boolean('refs-only')
-    .describe('refs-only', 'Include referenced files only')
+    .describe('refs-only', 'Include referenced files only, not entire context')
+
+    .boolean('api-wrap')
+    .describe('api-wrap', 'Wrap artifacts as SOAP APIs')
 
     .boolean('camelize')
     .describe('camelize', 'Convert names to camelCase')
@@ -144,16 +147,17 @@ if (_.includes(['specify'], command)) {
 
     .argv;
 
-  const generate = (csarSpec) => {
+  const generate = (csarspec) => {
     if (argvGen.output !== '-' && argvGen.clearOutput) fs.removeSync(argvGen.output);
 
     if (argvGen.output === '-') {
       const GenPacker = require('../lib/GenPacker');
 
-      GenPacker().genpack(csarSpec, {
+      GenPacker().genpack(csarspec, {
         workingDir: argvGen.context,
         outputStream: process.stdout,
         refsOnly: argvGen.refsOnly,
+        apiWrap: argvGen.apiWrap,
         camelize: argvGen.camelize,
         format: argvGen.packFormat
       }, exit);
@@ -162,10 +166,11 @@ if (_.includes(['specify'], command)) {
 
       const spinner = ora('Generating CSAR as packaged file').start();
 
-      GenPacker().genpack(csarSpec, {
+      GenPacker().genpack(csarspec, {
         workingDir: argvGen.context,
         outputFile: argvGen.output,
         refsOnly: argvGen.refsOnly,
+        apiWrap: argvGen.apiWrap,
         camelize: argvGen.camelize,
         format: argvGen.packFormat
       }, (err, outputFile) => {
@@ -182,10 +187,11 @@ if (_.includes(['specify'], command)) {
       //  spinner.text = 'Loading rainbows';
       //}, 1000 * 1);
 
-      Generator().generate(csarSpec, {
+      Generator().generate(csarspec, {
         workingDir: argvGen.context,
         outputDir: argvGen.output,
         refsOnly: argvGen.refsOnly,
+        apiWrap: argvGen.apiWrap,
         camelize: argvGen.camelize
       }, (err, outputDir) => {
         spinner.clear();
@@ -197,9 +203,9 @@ if (_.includes(['specify'], command)) {
   if (argvGen.spec === '-') {
     getStdin().then(stdin => {
       try {
-        const csarSpec = JSON.parse(stdin);
+        const csarspec = JSON.parse(stdin);
 
-        generate(csarSpec);
+        generate(csarspec);
       } catch (err) {
         exit(new Error('cannot parse stdin as JSON, ' + err));
       }
@@ -211,21 +217,21 @@ if (_.includes(['specify'], command)) {
     argvGen.spec = argvGen.spec || path.join(argvGen.context, 'csarspec.json');
     argvGen.spec = path.resolve(argvGen.spec);
 
-    let csarSpec;
+    let csarspec;
 
     try {
-      csarSpec = fs.readFileSync(argvGen.spec, 'utf8');
+      csarspec = fs.readFileSync(argvGen.spec, 'utf8');
     } catch (err) {
       argvGen.spec = path.join(argvGen.spec, 'csarspec.json');
 
       try {
-        csarSpec = fs.readFileSync(argvGen.spec, 'utf8');
+        csarspec = fs.readFileSync(argvGen.spec, 'utf8');
       } catch (err2) {
         return exit(new Error('cannot find or read csarspec.json, please specify location'));
       }
     }
 
-    generate(csarSpec);
+    generate(csarspec);
   }
 } else if (_.includes(['server'], command)) {
   require('./server');

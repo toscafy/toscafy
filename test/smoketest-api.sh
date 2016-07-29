@@ -50,7 +50,7 @@ node -e "console.log(JSON.parse(process.env.RESULT_JSON).status)"
 # CSAR spec as text field
 #
 
-export JOB_JSON=$(curl --silent -L -F "strip=2" -F "context=@test-in.tar" -F "csarSpec=$CSAR_SPEC" $BASE_URL/commands/generate)
+export JOB_JSON=$(curl --silent -L -F "strip=2" -F "context=@test-in.tar" -F "csarspec=$CSAR_SPEC" $BASE_URL/commands/generate)
 
 export JOB_LINK=$(node -e "console.log(JSON.parse(process.env.JOB_JSON).links.self)")
 
