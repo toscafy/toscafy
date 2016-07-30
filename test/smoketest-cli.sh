@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export EXPECTED=$(cat test/csar-1/expected/definitions.tosca)
+export EXPECTED="$(cat test/csar-1/expected/definitions.tosca)"
 
 bin/toscafy generate \
   --debug \
@@ -12,7 +12,7 @@ bin/toscafy generate \
 cat test-out/Definitions/definitions.tosca
 echo " "
 
-export ACTUAL=$(cat test-out/Definitions/definitions.tosca)
+export ACTUAL="$(cat test-out/Definitions/definitions.tosca)"
 
 rm -rf test-out
 
