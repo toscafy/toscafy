@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tosca:Definitions xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" id="example" xmlns:tns="http://toscafy.github.io/generated/example" targetNamespace="http://toscafy.github.io/generated/example">
+  <!-- ============== -->
+  <!-- Artifact Types -->
+  <!-- ============== -->
+  <tosca:ArtifactType name="ScriptArtifact" targetNamespace="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes"/>
+  <tosca:ArtifactType name="ArchiveArtifact" targetNamespace="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes"/>
+  <tosca:ArtifactType name="WAR" targetNamespace="http://www.example.com/ToscaTypes"/>
+  <tosca:ArtifactType name="Ansible" targetNamespace="http://opentosca.org/artifacttypes"/>
+  <tosca:ArtifactType name="Chef" targetNamespace="http://opentosca.org/artifacttypes"/>
+  <tosca:ArtifactType name="DockerArtifact" targetNamespace="http://toscafy.github.io/artifacttypes"/>
+  <tosca:ArtifactType name="DockerComposeArtifact" targetNamespace="http://toscafy.github.io/artifacttypes"/>
+  <!-- ================== -->
+  <!-- Relationship Types -->
+  <!-- ================== -->
+  <tosca:RelationshipType name="HostedOn" targetNamespace="HostedOn"/>
+  <tosca:RelationshipType name="ConnectsTo" targetNamespace="ConnectsTo"/>
+  <!-- ========== -->
+  <!-- Node Types -->
+  <!-- ========== -->
+  <tosca:Import namespace="http://toscafy.github.io/generated/example" location="schema/properties.xsd" importType="http://www.w3.org/2001/XMLSchema"/>
+  <tosca:NodeType name="Apache">
+    <winery:PropertiesDefinition elementname="Apache_Properties" namespace="http://toscafy.github.io/generated/example">
+      <winery:properties>
+        <winery:key>HTTPPort</winery:key>
+        <winery:type>xsd:string</winery:type>
+      </winery:properties>
+      <winery:properties>
+        <winery:key>UseSSL</winery:key>
+        <winery:type>xsd:boolean</winery:type>
+      </winery:properties>
+      <winery:properties>
+        <winery:key>logs</winery:key>
+        <winery:type>xsd:string</winery:type>
+      </winery:properties>
+    </winery:PropertiesDefinition>
+    <tosca:PropertiesDefinition element="tns:Apache_Properties"/>
+    <tosca:Interfaces>
+      <tosca:Interface name="http://www.example.com/interfaces/lifecycle">
+        <tosca:Operation name="install">
+          <tosca:InputParameters>
+            <tosca:InputParameter name="HTTPPort" type="xsd:string"/> <!-- required="yes" -->
+            <tosca:InputParameter name="UseSSL" type="xsd:boolean"/> <!-- required="yes" -->
+          </tosca:InputParameters>
+          <tosca:OutputParameters>
+            <tosca:OutputParameter name="logs" type="xsd:string"/>
+          </tosca:OutputParameters>
+        </tosca:Operation>
+        <tosca:Operation name="configure">
+          <tosca:InputParameters>
+            <tosca:InputParameter name="HTTPPort" type="xsd:string"/> <!-- required="yes" -->
+            <tosca:InputParameter name="UseSSL" type="xsd:boolean"/> <!-- required="yes" -->
+          </tosca:InputParameters>
+        </tosca:Operation>
+      </tosca:Interface>
+    </tosca:Interfaces>
+  </tosca:NodeType>
+  <tosca:NodeTypeImplementation name="Apache_Impl" nodeType="tns:Apache">
+    <tosca:ImplementationArtifacts>
+      <tosca:ImplementationArtifact xmlns:ia="http://www.example.com/ToscaTypes" name="IA-apacheInstall" interfaceName="http://www.example.com/interfaces/lifecycle" artifactType="ia:WAR" artifactRef="tns:apacheInstall"/>
+    </tosca:ImplementationArtifacts>
+  </tosca:NodeTypeImplementation>
+  <tosca:NodeType name="MySql">
+    <tosca:PropertiesDefinition element="tns:MySql_Properties"/>
+    <tosca:Interfaces>
+      <tosca:Interface name="http://www.example.com/interfaces/lifecycle">
+        <tosca:Operation name="install">
+        </tosca:Operation>
+        <tosca:Operation name="configure">
+        </tosca:Operation>
+      </tosca:Interface>
+    </tosca:Interfaces>
+  </tosca:NodeType>
+  <tosca:NodeTypeImplementation name="MySql_Impl" nodeType="tns:MySql">
+    <tosca:ImplementationArtifacts>
+      <tosca:ImplementationArtifact xmlns:ia="http://toscafy.github.io/artifacttypes" name="IA-mysqlInstall" interfaceName="http://www.example.com/interfaces/lifecycle" artifactType="ia:DockerComposeArtifact" artifactRef="tns:mysqlInstall"/>
+    </tosca:ImplementationArtifacts>
+    <tosca:DeploymentArtifacts>
+      <tosca:DeploymentArtifact xmlns:da="http://www.example.com/ToscaTypes" name="DA-specialArtifactName" artifactType="da:WAR" artifactRef="tns:specialArtifactName"/>
+    </tosca:DeploymentArtifacts>
+  </tosca:NodeTypeImplementation>
+  <tosca:NodeType name="AnotherNodeType">
+    <tosca:PropertiesDefinition element="tns:AnotherNodeType_Properties"/>
+  </tosca:NodeType>
+  <tosca:NodeTypeImplementation name="AnotherNodeType_Impl" nodeType="tns:AnotherNodeType">
+    <tosca:DeploymentArtifacts>
+      <tosca:DeploymentArtifact xmlns:da="http://www.example.com/ToscaTypes" name="DA-anotherNodeTypeDa" artifactType="da:WAR" artifactRef="tns:anotherNodeTypeDa"/>
+    </tosca:DeploymentArtifacts>
+  </tosca:NodeTypeImplementation>
+  <!-- ================== -->
+  <!-- Artifact Templates -->
+  <!-- ================== -->
+  <tosca:ArtifactTemplate xmlns:at="http://www.example.com/ToscaTypes" xmlns="http://www.example.com/ToscaTypes" id="apacheInstall" type="at:WAR">
+    <tosca:Properties>
+      <WSProperties><ServiceEndpoint>/services/org_opentosca_NodeTypes_UbuntuPort</ServiceEndpoint><PortType>{http://opentosca.org/NodeTypes}org_opentosca_NodeTypes_Ubuntu</PortType><InvocationType>SOAP/HTTP</InvocationType></WSProperties>
+    </tosca:Properties>
+    <tosca:ArtifactReferences>
+      <tosca:ArtifactReference reference="opal-clus.metadata.json"/>
+      <tosca:ArtifactReference reference="./some-script.sh"/>
+      <tosca:ArtifactReference reference="some-dir/sub-dir/test3.txt"/>
+    </tosca:ArtifactReferences>
+  </tosca:ArtifactTemplate>
+  <tosca:ArtifactTemplate xmlns:at="http://toscafy.github.io/artifacttypes" xmlns="http://toscafy.github.io/artifacttypes" id="mysqlInstall" type="at:DockerComposeArtifact">
+    <tosca:Properties>
+      <ArtifactProperties><dockerComposeYml>./some-script.sh</dockerComposeYml><context>./some-script.sh</context><serviceName>mysql-mgmt-api</serviceName><privatePort>3000</privatePort><urlPath>/soap-endpoint</urlPath></ArtifactProperties>
+    </tosca:Properties>
+  </tosca:ArtifactTemplate>
+  <tosca:ArtifactTemplate xmlns:at="http://www.example.com/ToscaTypes" xmlns="http://www.example.com/ToscaTypes" id="specialArtifactName" type="at:WAR">
+    <tosca:Properties>
+      <WSProperties><ServiceEndpoint>/services/org_opentosca_NodeTypes_UbuntuPort</ServiceEndpoint><PortType>{http://opentosca.org/NodeTypes}org_opentosca_NodeTypes_Ubuntu</PortType><InvocationType>SOAP/HTTP</InvocationType></WSProperties>
+    </tosca:Properties>
+    <tosca:ArtifactReferences>
+      <tosca:ArtifactReference reference="some-dir/test2.txt"/>
+    </tosca:ArtifactReferences>
+  </tosca:ArtifactTemplate>
+  <tosca:ArtifactTemplate xmlns:at="http://www.example.com/ToscaTypes" xmlns="http://www.example.com/ToscaTypes" id="anotherNodeTypeDa" type="at:WAR">
+    <tosca:ArtifactReferences>
+      <tosca:ArtifactReference reference="opal-clus.metadata.json"/>
+      <tosca:ArtifactReference reference="sub-dir/test3.txt"/>
+    </tosca:ArtifactReferences>
+  </tosca:ArtifactTemplate>
+  <!-- ============================ -->
+  <!-- Service & Topology Templates -->
+  <!-- ============================ -->
+  <tosca:ServiceTemplate id="productionEnv" name="productionEnv">
+    <tosca:TopologyTemplate>
+      <tosca:NodeTemplate name="apacheHttpServer" minInstances="1" maxInstances="1" id="apacheHttpServer" type="tns:Apache">
+        <tosca:Properties>
+          <tns:Apache_Properties xmlns="http://toscafy.github.io/generated/example">
+            <HTTPPort>8081</HTTPPort>
+            <UseSSL>true</UseSSL>
+          </tns:Apache_Properties>
+        </tosca:Properties>
+      </tosca:NodeTemplate>
+      <tosca:NodeTemplate name="mySqldbServer" minInstances="1" maxInstances="1" id="mySqldbServer" type="tns:MySql">
+      </tosca:NodeTemplate>
+      <tosca:RelationshipTemplate xmlns:rt="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes" name="apacheConnectsToMySql" id="apacheConnectsToMySql" type="rt:ConnectsTo">
+        <tosca:SourceElement ref="apacheHttpServer"/>
+        <tosca:TargetElement ref="mySqldbServer"/>
+      </tosca:RelationshipTemplate>
+    </tosca:TopologyTemplate>
+  </tosca:ServiceTemplate>
+</tosca:Definitions>
