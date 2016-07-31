@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tosca:Definitions xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" id="MysqlCSAR" xmlns:tns="http://toscafy.github.io/generated/MysqlCSAR" targetNamespace="http://toscafy.github.io/generated/MysqlCSAR">
+  <!-- ============== -->
+  <!-- Artifact Types -->
+  <!-- ============== -->
+  <tosca:ArtifactType name="ScriptArtifact" targetNamespace="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes"/>
+  <tosca:ArtifactType name="ArchiveArtifact" targetNamespace="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes"/>
+  <tosca:ArtifactType name="WAR" targetNamespace="http://www.example.com/ToscaTypes"/>
+  <tosca:ArtifactType name="Ansible" targetNamespace="http://opentosca.org/artifacttypes"/>
+  <tosca:ArtifactType name="Chef" targetNamespace="http://opentosca.org/artifacttypes"/>
+  <tosca:ArtifactType name="DockerArtifact" targetNamespace="http://toscafy.github.io/artifacttypes"/>
+  <tosca:ArtifactType name="DockerComposeArtifact" targetNamespace="http://toscafy.github.io/artifacttypes"/>
+  <!-- ================== -->
+  <!-- Relationship Types -->
+  <!-- ================== -->
+  <tosca:RelationshipType name="HostedOn" targetNamespace="HostedOn"/>
+  <tosca:RelationshipType name="ConnectsTo" targetNamespace="ConnectsTo"/>
+  <!-- ========== -->
+  <!-- Node Types -->
+  <!-- ========== -->
+  <tosca:Import namespace="http://toscafy.github.io/generated/MysqlCSAR" location="schema/properties.xsd" importType="http://www.w3.org/2001/XMLSchema"/>
+  <tosca:NodeType name="Mysql">
+    <winery:PropertiesDefinition elementname="Mysql_Properties" namespace="http://toscafy.github.io/generated/MysqlCSAR">
+      <winery:properties>
+        <winery:key>mysqlServiceName</winery:key>
+        <winery:type>xsd:string</winery:type>
+      </winery:properties>
+      <winery:properties>
+        <winery:key>mysqlServerRootPassword</winery:key>
+        <winery:type>xsd:string</winery:type>
+      </winery:properties>
+      <winery:properties>
+        <winery:key>mysqlServerDebianPassword</winery:key>
+        <winery:type>tns:unknown</winery:type>
+      </winery:properties>
+      <winery:properties>
+        <winery:key>mysqlServerReplPassword</winery:key>
+        <winery:type>tns:unknown</winery:type>
+      </winery:properties>
+      <winery:properties>
+        <winery:key>mysqlAllowRemoteRoot</winery:key>
+        <winery:type>xsd:boolean</winery:type>
+      </winery:properties>
+      <winery:properties>
+        <winery:key>mysqlRemoveAnonymousUsers</winery:key>
+        <winery:type>xsd:boolean</winery:type>
+      </winery:properties>
+      <winery:properties>
+        <winery:key>mysqlRootNetworkAcl</winery:key>
+        <winery:type>tns:unknown</winery:type>
+      </winery:properties>
+      <winery:properties>
+        <winery:key>mysqlDataDir</winery:key>
+        <winery:type>xsd:string</winery:type>
+      </winery:properties>
+      <winery:properties>
+        <winery:key>mysqlPort</winery:key>
+        <winery:type>xsd:string</winery:type>
+      </winery:properties>
+      <winery:properties>
+        <winery:key>mysqlServerPackageVersion</winery:key>
+        <winery:type>tns:unknown</winery:type>
+      </winery:properties>
+      <winery:properties>
+        <winery:key>mysqlServerPackageAction</winery:key>
+        <winery:type>xsd:string</winery:type>
+      </winery:properties>
+      <winery:properties>
+        <winery:key>runList</winery:key>
+        <winery:type>xsd:string</winery:type>
+      </winery:properties>
+    </winery:PropertiesDefinition>
+    <tosca:PropertiesDefinition element="tns:Mysql_Properties"/>
+    <tosca:Interfaces>
+      <tosca:Interface name="http://www.example.com/interfaces/lifecycle">
+        <tosca:Operation name="install">
+          <tosca:InputParameters>
+            <tosca:InputParameter name="mysqlServiceName" type="xsd:string"/> <!-- required="yes" -->
+            <tosca:InputParameter name="mysqlServerRootPassword" type="xsd:string"/> <!-- required="yes" -->
+            <tosca:InputParameter name="mysqlServerDebianPassword" type="tns:unknown"/> <!-- required="yes" -->
+            <tosca:InputParameter name="mysqlServerReplPassword" type="tns:unknown"/> <!-- required="yes" -->
+            <tosca:InputParameter name="mysqlAllowRemoteRoot" type="xsd:boolean"/> <!-- required="yes" -->
+            <tosca:InputParameter name="mysqlRemoveAnonymousUsers" type="xsd:boolean"/> <!-- required="yes" -->
+            <tosca:InputParameter name="mysqlRootNetworkAcl" type="tns:unknown"/> <!-- required="yes" -->
+            <tosca:InputParameter name="mysqlDataDir" type="xsd:string"/> <!-- required="yes" -->
+            <tosca:InputParameter name="mysqlPort" type="xsd:string"/> <!-- required="yes" -->
+            <tosca:InputParameter name="mysqlServerPackageVersion" type="tns:unknown"/> <!-- required="yes" -->
+            <tosca:InputParameter name="mysqlServerPackageAction" type="xsd:string"/> <!-- required="yes" -->
+            <tosca:InputParameter name="runList" type="xsd:string"/> <!-- required="yes" -->
+          </tosca:InputParameters>
+        </tosca:Operation>
+      </tosca:Interface>
+    </tosca:Interfaces>
+  </tosca:NodeType>
+  <tosca:NodeTypeImplementation name="Mysql_Impl" nodeType="tns:Mysql">
+    <tosca:ImplementationArtifacts>
+      <tosca:ImplementationArtifact xmlns:ia="http://opentosca.org/artifacttypes" name="IA-install-Mysql-install" interfaceName="http://www.example.com/interfaces/lifecycle" operationName="install" artifactType="ia:Chef" artifactRef="tns:Mysql-install"/>
+    </tosca:ImplementationArtifacts>
+  </tosca:NodeTypeImplementation>
+  <!-- ================== -->
+  <!-- Artifact Templates -->
+  <!-- ================== -->
+  <tosca:ArtifactTemplate xmlns:at="http://toscafy.github.io/artifacttypes" xmlns="http://toscafy.github.io/artifacttypes" id="Mysql-install" type="at:DockerComposeArtifact">
+    <tosca:Properties>
+      <ArtifactProperties><context>any2api-generated-Mysql-install.tar.gz</context><containerPort>3000</containerPort><endpointPath>/</endpointPath></ArtifactProperties>
+    </tosca:Properties>
+    <tosca:ArtifactReferences>
+      <tosca:ArtifactReference reference="any2api-generated-Mysql-install.tar.gz"/>
+    </tosca:ArtifactReferences>
+  </tosca:ArtifactTemplate>
+  <!-- ============================ -->
+  <!-- Service & Topology Templates -->
+  <!-- ============================ -->
+</tosca:Definitions>

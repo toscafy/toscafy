@@ -2,6 +2,8 @@
 
 * how to include icons for Winery? see example in csar-bricks
 
+* integrate swagger-ui to play with API server
+
 
 
 * any2api+toscafy: fork soap generator: opentosca generator
@@ -11,7 +13,6 @@
 
 * support node types reqs & caps to generate topology skeletons
 * support generating TOSCA YAML
-* integrate swagger-ui to play with API server
 * add built-in func $toscafy.fetchAsDir using decompress module
 * think: options for 'generate' command: generate CSAR only for subset of given artifacts, node types, etc.
 * think: support streaming of tarred context, i.e. 'specify' can produce a tar stream which is consumed by 'generate'

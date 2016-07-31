@@ -1,13 +1,14 @@
 #!/bin/sh
 
-export EXPECTED="$(cat test/expected/csar-1_definitions.tosca)"
+export EXPECTED="$(cat test/expected/cli-wrap_definitions.tosca)"
 
-bin/toscafy generate \
-  --debug \
-  -o test-out \
-  -c test/csar-1 \
-  --camelize \
-  --clear-output
+bin/toscafy specify -D \
+  -i chef:mysql:5.6.1 \
+  --wrap soap-api \
+  | bin/toscafy generate -D \
+    -o test-out \
+    --clear-output \
+    -s -
 
 cat test-out/Definitions/definitions.tosca
 echo " "
