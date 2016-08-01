@@ -134,6 +134,8 @@ paths:
           type: string
       tags:
         - CSARs
+      produces:
+        - application/octet-stream
       responses:
         default:
           description: CSAR file
