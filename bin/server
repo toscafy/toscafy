@@ -12,6 +12,7 @@ const jsonParser = bodyParser.json();
 const _ = require('lodash');
 const async = require('async');
 const multer = require('multer'); // alternative: https://www.npmjs.com/package/multiparty
+const got = require('got');
 const decompress = require('decompress');
 
 const specProducer = require('../lib/SpecProducer')();
@@ -44,13 +45,13 @@ app.post('/commands/specify', jsonParser, (req, res) => {
     input: req.body.input || req.query.input,
     artifactType: req.body.artifactType || req.query.artifactType,
     wrap: req.body.wrap || req.query.wrap,
+    callback: req.body.callback || req.query.callback,
     links: {
       self: '/jobs/' + id
     }
   };
 
-  if (jobs[id].wrap === 'true') jobs[id].wrap = true;
-  else jobs[id].wrap = false;
+  jobs[id].wrap = (jobs[id].wrap === 'true');
 
   res.redirect('/jobs/' + id);
 
@@ -71,6 +72,14 @@ app.post('/commands/specify', jsonParser, (req, res) => {
 
       csarspecs[id] = csarspec;
     }
+
+    if (!jobs[id].callback) return;
+
+    got.post(jobs[id].callback, { body: JSON.stringify(jobs[id]) }).then(response => {
+      //response.body
+    }).catch(err => {
+      console.error('callback to ' + jobs[id].callback + ' failed: ' + err);
+    });
   });
 });
 
@@ -89,6 +98,7 @@ app.post('/commands/generate', uploadHandler, (req, res, next) => {
     strip: req.body.strip || req.query.strip,
     refsOnly: req.body.refsOnly || req.query.refsOnly,
     camelize: req.body.camelize || req.query.camelize,
+    callback: req.body.callback || req.query.callback,
     links: {
       self: '/jobs/' + id
     }
@@ -96,11 +106,9 @@ app.post('/commands/generate', uploadHandler, (req, res, next) => {
 
   jobs[id].strip = _.toInteger(jobs[id].strip);
 
-  if (jobs[id].refsOnly === 'true') jobs[id].refsOnly = true;
-  else jobs[id].refsOnly = false;
+  jobs[id].refsOnly = (jobs[id].refsOnly === 'true');
 
-  if (jobs[id].camelize === 'true') jobs[id].camelize = true;
-  else jobs[id].camelize = false;
+  jobs[id].camelize = (jobs[id].camelize === 'true');
 
   res.redirect('/jobs/' + id);
 
@@ -192,6 +200,14 @@ app.post('/commands/generate', uploadHandler, (req, res, next) => {
       jobs[id].status = 'finished';
       jobs[id].links.csar = '/csars/' + id + '.' + jobs[id].packFormat;
     }
+
+    if (!jobs[id].callback) return;
+
+    got.post(jobs[id].callback, { body: JSON.stringify(jobs[id]) }).then(response => {
+      //response.body
+    }).catch(err => {
+      console.error('callback to ' + jobs[id].callback + ' failed: ' + err);
+    });
   });
 });
 
