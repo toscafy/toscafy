@@ -1,0 +1,164 @@
+swagger: '2.0'
+info:
+  title: toscafy API
+  description: Generate TOSCA CSARs using toscafy
+  version: "1.0.0"
+schemes:
+  - http
+basePath: /
+produces:
+  - application/json
+paths:
+  /commands/specify:
+    post:
+      summary: Produce CSAR spec
+      parameters:
+        - name: input
+          in: query
+          description: URL or reference to artifact
+          required: true
+          type: string
+        - name: artifactType
+          in: query
+          description: Type of artifact, e.g. 'chef'
+          required: false
+          type: string
+        - name: wrap
+          in: query
+          description: Wrap artifact as 'soap-api', 'rest-api', ...
+          required: false
+          type: string
+        - name: callback
+          in: query
+          description: Callback URL to send final job information
+          required: false
+          type: string
+      tags:
+        - Commands
+      responses:
+        default:
+          description: Job information
+          schema:
+            $ref: '#/definitions/Job'
+  /commands/generate:
+    post:
+      summary: Generate TOSCA CSAR based on CSAR spec
+      parameters:
+        - name: csarspec
+          in: formData
+          description: csarspec.json file
+          required: false
+          type: file
+        - name: csarspecId
+          in: formData
+          description: Reference to previously produced CSAR
+          required: false
+          type: string
+        - name: context
+          in: formData
+          description: Context as ZIP or TAR archive
+          required: false
+          type: file
+        - name: strip
+          in: formData
+          description: Strip path components of context files
+          required: false
+          type: integer
+        - name: packFormat
+          in: formData
+          description: Format of packaged CSAR, i.e. 'zip', 'tar' or 'tgz'
+          required: false
+          type: string
+        - name: refsOnly
+          in: formData
+          description: Include referenced files only in generated CSAR, not entire context
+          required: false
+          type: boolean
+        - name: camelize
+          in: formData
+          description: Convert names to camelCase
+          required: false
+          type: boolean
+        - name: callback
+          in: formData
+          description: Callback URL to send final job information
+          required: false
+          type: string
+      tags:
+        - Commands
+      responses:
+        default:
+          description: Job information
+          schema:
+            $ref: '#/definitions/Job'
+  /jobs/{jobId}:
+    get:
+      summary: Get job information
+      parameters:
+        - name: jobId
+          in: path
+          description: Unique identifier of job
+          required: true
+          type: string
+      tags:
+        - Jobs
+      responses:
+        default:
+          description: Job information
+          schema:
+            $ref: '#/definitions/Job'
+  /csarspecs/{csarspecId}:
+    get:
+      summary: Get produced CSAR spec
+      parameters:
+        - name: csarspecId
+          in: path
+          description: Unique identifier of CSAR spec
+          required: true
+          type: string
+      tags:
+        - CSARs
+      responses:
+        default:
+          description: CSAR spec
+          schema:
+            type: object
+  /csars/{csarFilename}:
+    get:
+      summary: Get generated CSAR file
+      parameters:
+        - name: csarFilename
+          in: path
+          description: Filename of generated CSAR
+          required: true
+          type: string
+      tags:
+        - CSARs
+      responses:
+        default:
+          description: CSAR file
+          schema:
+            type: file
+definitions:
+  Job:
+    properties:
+      id:
+        type: string
+        description: Unique identifier of job
+      command:
+        type: string
+        description: Command that triggered this job, i.e. 'specify' or 'generate'
+      status:
+        type: string
+        description: Job status, i.e. 'running', 'finished' or 'failed'
+      created:
+        type: string
+        description: Date of job creation
+      finished:
+        type: string
+        description: Date when job finished or failed
+      error:
+        type: string
+        description: Error message if job failed
+
+# http://editor.swagger.io

@@ -30,8 +30,14 @@ const csars = {};
 
 
 
+app.use('/docs', express.static(path.join(__dirname, '..', 'node_modules/swagger-ui/dist')));
+
+app.get('/swagger.yaml', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'swagger.yaml'));
+});
+
 app.get('/', (req, res) => {
-  res.send('toscafy server');
+  res.redirect('/docs?url=/swagger.yaml');
 });
 
 app.post('/commands/specify', jsonParser, (req, res) => {
