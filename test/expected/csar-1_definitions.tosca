@@ -102,8 +102,11 @@
   </tosca:ArtifactTemplate>
   <tosca:ArtifactTemplate xmlns:at="http://toscafy.github.io/artifacttypes" xmlns="http://toscafy.github.io/artifacttypes" id="mysqlInstall" type="at:DockerComposeArtifact">
     <tosca:Properties>
-      <ArtifactProperties><dockerComposeYml>./some-script.sh</dockerComposeYml><context>./some-script.sh</context><serviceName>mysql-mgmt-api</serviceName><privatePort>3000</privatePort><urlPath>/soap-endpoint</urlPath></ArtifactProperties>
+      <ArtifactProperties><contextFile>test2.txt</contextFile><serviceName>mysql-mgmt-api</serviceName><containerPort>3000</containerPort><endpointPath>/</endpointPath><endpointKind>soap</endpointKind></ArtifactProperties>
     </tosca:Properties>
+    <tosca:ArtifactReferences>
+      <tosca:ArtifactReference reference="some-dir/test2.txt"/>
+    </tosca:ArtifactReferences>
   </tosca:ArtifactTemplate>
   <tosca:ArtifactTemplate xmlns:at="http://www.example.com/ToscaTypes" xmlns="http://www.example.com/ToscaTypes" id="specialArtifactName" type="at:WAR">
     <tosca:Properties>

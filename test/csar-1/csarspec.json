@@ -59,12 +59,15 @@
     "mysql_install": {
       "type": "DockerCompose",
       "properties": {
-        "dockerComposeYml": "./some-script.sh",
-        "context": "./some-script.sh",
+        "contextFile": "test2.txt",
         "serviceName": "mysql-mgmt-api",
-        "privatePort": "3000",
-        "urlPath": "/soap-endpoint"
-      }
+        "containerPort": "3000",
+        "endpointPath": "/",
+        "endpointKind": "soap"
+      },
+      "references": [
+        "some-dir/test2.txt"
+      ]
     }
   },
   "topologies": {
