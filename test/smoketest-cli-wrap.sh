@@ -4,7 +4,7 @@ export EXPECTED="$(cat test/expected/cli-wrap_definitions.tosca)"
 
 bin/toscafy specify -D \
   -i chef:mysql:5.6.1 \
-  --wrap soap-api \
+  --wrap rest-api \
   | bin/toscafy generate -D \
     -o test-out \
     --clear-output \
