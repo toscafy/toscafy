@@ -13,8 +13,8 @@
   <!-- ================== -->
   <!-- Relationship Types -->
   <!-- ================== -->
-  <tosca:RelationshipType name="HostedOn" targetNamespace="HostedOn"/>
-  <tosca:RelationshipType name="ConnectsTo" targetNamespace="ConnectsTo"/>
+  <tosca:RelationshipType name="HostedOn" targetNamespace="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes"/>
+  <tosca:RelationshipType name="ConnectsTo" targetNamespace="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes"/>
   <!-- ========== -->
   <!-- Node Types -->
   <!-- ========== -->
@@ -125,7 +125,7 @@
   <!-- ============================ -->
   <!-- Service & Topology Templates -->
   <!-- ============================ -->
-  <tosca:ServiceTemplate id="productionEnv" name="productionEnv">
+  <tosca:ServiceTemplate id="productionEnv" name="productionEnv" targetNamespace="http://toscafy.github.io/generated/example">
     <tosca:TopologyTemplate>
       <tosca:NodeTemplate name="apacheHttpServer" minInstances="1" maxInstances="1" id="apacheHttpServer" type="tns:Apache">
         <tosca:Properties>

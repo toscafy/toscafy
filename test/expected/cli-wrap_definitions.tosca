@@ -13,8 +13,8 @@
   <!-- ================== -->
   <!-- Relationship Types -->
   <!-- ================== -->
-  <tosca:RelationshipType name="HostedOn" targetNamespace="HostedOn"/>
-  <tosca:RelationshipType name="ConnectsTo" targetNamespace="ConnectsTo"/>
+  <tosca:RelationshipType name="HostedOn" targetNamespace="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes"/>
+  <tosca:RelationshipType name="ConnectsTo" targetNamespace="http://docs.oasis-open.org/tosca/ns/2011/12/ToscaBaseTypes"/>
   <!-- ========== -->
   <!-- Node Types -->
   <!-- ========== -->

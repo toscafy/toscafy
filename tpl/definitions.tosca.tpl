@@ -18,7 +18,7 @@
   <!-- ================== -->
 
   <% _.forEach(relationshipTypes, function(rt) { %>
-  <tosca:RelationshipType name="<%= rt.name %>" targetNamespace="<%= rt.name %>"/>
+  <tosca:RelationshipType name="<%= rt.name %>" targetNamespace="<%= rt.namespace %>"/>
   <% }); %>
 
   <% if (spec.relationship_types_xml) { %>
@@ -132,7 +132,7 @@
   <!-- ============================ -->
 
   <% _.forEach(spec.topologies, function(top, topName) { %>
-  <tosca:ServiceTemplate id="<%= topName %>" name="<%= topName %>">
+  <tosca:ServiceTemplate id="<%= topName %>" name="<%= topName %>" targetNamespace="<%= spec.csar_namespace %>">
     <tosca:TopologyTemplate>
       <% _.forEach(top.nodes, function(n, nName) { %>
       <tosca:NodeTemplate name="<%= nName %>" minInstances="1" maxInstances="1" id="<%= nName %>" type="tns:<%= n.type %>">
