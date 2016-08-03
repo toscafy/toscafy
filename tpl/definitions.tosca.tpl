@@ -80,13 +80,13 @@
       <% _.forEach(nt.interfaces, function(iface, ifaceName) { %>
       <% if (iface.implementation_artifacts) { %>
       <% _.forEach(iface.implementation_artifacts, function(ia) { %>
-      <tosca:ImplementationArtifact xmlns:ia="<%= ia.namespace %>" name="IA-<%= ia.name %>" interfaceName="<%= ifaceName %>" artifactType="ia:<%= ia.type %>" artifactRef="tns:<%= ia.name %>"/>
+      <tosca:ImplementationArtifact xmlns:ia="<%= spec.artifacts[ia].namespace %>" name="IA-<%= ia %>" interfaceName="<%= ifaceName %>" artifactType="ia:<%= spec.artifacts[ia].type %>" artifactRef="tns:<%= ia %>"/>
       <% }); %>
       <% } %>
       <% _.forEach(iface.operations, function(op, opName) { %>
       <% if (op.implementation_artifacts) { %>
       <% _.forEach(op.implementation_artifacts, function(ia) { %>
-      <tosca:ImplementationArtifact xmlns:ia="<%= ia.namespace %>" name="IA-<%= opName %>-<%= ia.name %>" interfaceName="<%= ifaceName %>" operationName="<%= opName %>" artifactType="ia:<%= ia.type %>" artifactRef="tns:<%= ia.name %>"/>
+      <tosca:ImplementationArtifact xmlns:ia="<%= spec.artifacts[ia].namespace %>" name="IA-<%= opName %>-<%= ia %>" interfaceName="<%= ifaceName %>" operationName="<%= opName %>" artifactType="ia:<%= spec.artifacts[ia].type %>" artifactRef="tns:<%= ia %>"/>
       <% }); %>
       <% } %>
       <% }); %>
@@ -96,7 +96,7 @@
     <% if (!_.isEmpty(nt.deployment_artifacts)) { %>
     <tosca:DeploymentArtifacts>
       <% _.forEach(nt.deployment_artifacts, function(da) { %>
-      <tosca:DeploymentArtifact xmlns:da="<%= da.namespace %>" name="DA-<%= da.name %>" artifactType="da:<%= da.type %>" artifactRef="tns:<%= da.name %>"/>
+      <tosca:DeploymentArtifact xmlns:da="<%= spec.artifacts[da].namespace %>" name="DA-<%= da %>" artifactType="da:<%= spec.artifacts[da].type %>" artifactRef="tns:<%= da %>"/>
       <% }); %>
     </tosca:DeploymentArtifacts>
     <% } %>
@@ -148,7 +148,7 @@
         <% if (!_.isEmpty(n.deployment_artifacts)) { %>
         <tosca:DeploymentArtifacts>
           <% _.forEach(n.deployment_artifacts, function(da) { %>
-          <tosca:DeploymentArtifact xmlns:da="<%= da.namespace %>" name="DA-<%= da.name %>" artifactType="da:<%= da.type %>" artifactRef="tns:<%= da.name %>"/>
+          <tosca:DeploymentArtifact xmlns:da="<%= spec.artifacts[da].namespace %>" name="DA-<%= da %>" artifactType="da:<%= spec.artifacts[da].type %>" artifactRef="tns:<%= da %>"/>
           <% }); %>
         </tosca:DeploymentArtifacts>
         <% } %>

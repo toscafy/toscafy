@@ -94,7 +94,7 @@
   </tosca:NodeType>
   <tosca:NodeTypeImplementation name="Mysql_Impl" nodeType="tns:Mysql">
     <tosca:ImplementationArtifacts>
-      <tosca:ImplementationArtifact xmlns:ia="http://opentosca.org/artifacttypes" name="IA-install-Mysql-install" interfaceName="http://www.example.com/interfaces/lifecycle" operationName="install" artifactType="ia:Chef" artifactRef="tns:Mysql-install"/>
+      <tosca:ImplementationArtifact xmlns:ia="http://toscafy.github.io/artifacttypes" name="IA-install-Mysql-install" interfaceName="http://www.example.com/interfaces/lifecycle" operationName="install" artifactType="ia:DockerComposeArtifact" artifactRef="tns:Mysql-install"/>
     </tosca:ImplementationArtifacts>
   </tosca:NodeTypeImplementation>
   <!-- ================== -->
