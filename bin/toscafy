@@ -19,7 +19,7 @@ const yargs = require('yargs')
   .command('build', 'Alias for generate')
   .command('server', 'Start API server')
   .demand(1, 'Valid command required')
-  //.string('_')
+  .string('_') // interpret non-hyphenated arguments as strings
 
   .help('h')
   .alias('h', 'help')
@@ -51,7 +51,7 @@ const exit = (err, out) => {
 
 if (_.includes(['specify'], command)) {
   const argvSpec = yargs.reset()
-    .usage(`Usage: ${toscafyBin} ${command} [OPTIONS]`)
+    .usage(`Usage: ${toscafyBin} ${command} [OPTIONS] [INPUT]`)
     //.example(`${toscafyBin} ${command} -o /my/csar-dir`)
 
     .string('i')
@@ -75,7 +75,7 @@ if (_.includes(['specify'], command)) {
 
     .argv;
 
-  argvSpec.input = argvSpec.input || process.cwd();
+  argvSpec.input = argvSpec.input || _.nth(argvSpec._, 1) || process.cwd();
   argvSpec.output = argvSpec.output || '-';
 
   if (argvSpec.output !== '-' && argvSpec.clearOutput) fs.removeSync(argvSpec.output);
@@ -104,7 +104,7 @@ if (_.includes(['specify'], command)) {
   });
 } else if (_.includes(['generate', 'build'], command)) {
   const argvGen = yargs.reset()
-    .usage(`Usage: ${toscafyBin} ${command} [OPTIONS]`) // PATH | URL | -
+    .usage(`Usage: ${toscafyBin} ${command} [OPTIONS] [CONTEXT]`) // PATH | URL | -
     .example(`${toscafyBin} ${command} -o /my/csar-dir`)
     .example(`${toscafyBin} ${command} -p -o /my/csar.zip`)
 
@@ -148,6 +148,8 @@ if (_.includes(['specify'], command)) {
     .describe('clear-output', 'Remove existing output dir or file')
 
     .argv;
+
+  argvGen.context = argvGen.context || _.nth(argvGen._, 1);
 
   const generate = (csarspec) => {
     if (argvGen.output !== '-' && argvGen.clearOutput) fs.removeSync(argvGen.output);
