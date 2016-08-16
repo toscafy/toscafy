@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tosca:Definitions xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" id="Mysql_CSAR" xmlns:tns="http://toscafy.github.io/generated/Mysql_CSAR" targetNamespace="http://toscafy.github.io/generated/Mysql_CSAR">
+<tosca:Definitions xmlns:tosca="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:winery="http://www.opentosca.org/winery/extensions/tosca/2013/02/12" xmlns:selfservice="http://www.eclipse.org/winery/model/selfservice" id="Mysql_CSAR" xmlns:csar="http://toscafy.github.io/generated/Mysql_CSAR" targetNamespace="http://toscafy.github.io/generated/Mysql_CSAR">
   <!-- ============== -->
   <!-- Artifact Types -->
   <!-- ============== -->
@@ -20,7 +20,7 @@
   <!-- Node Types -->
   <!-- ========== -->
   <tosca:Import namespace="http://toscafy.github.io/generated/Mysql_CSAR" location="schema/properties.xsd" importType="http://www.w3.org/2001/XMLSchema"/>
-  <tosca:NodeType name="Mysql">
+  <tosca:NodeType name="Mysql" targetNamespace="http://toscafy.github.io/generated/Mysql_CSAR">
     <winery:PropertiesDefinition elementname="Mysql_Properties" namespace="http://toscafy.github.io/generated/Mysql_CSAR">
       <winery:properties>
         <winery:key>mysqlServiceName</winery:key>
@@ -71,7 +71,7 @@
         <winery:type>xsd:string</winery:type>
       </winery:properties>
     </winery:PropertiesDefinition>
-    <tosca:PropertiesDefinition element="tns:Mysql_Properties"/>
+    <tosca:PropertiesDefinition element="csar:Mysql_Properties"/>
     <tosca:Interfaces>
       <tosca:Interface name="http://www.example.com/interfaces/lifecycle">
         <tosca:Operation name="install">
@@ -93,9 +93,9 @@
       </tosca:Interface>
     </tosca:Interfaces>
   </tosca:NodeType>
-  <tosca:NodeTypeImplementation name="Mysql_Impl" nodeType="tns:Mysql">
+  <tosca:NodeTypeImplementation name="Mysql_Impl" xmlns:nt="http://toscafy.github.io/generated/Mysql_CSAR" nodeType="nt:Mysql" targetNamespace="http://toscafy.github.io/generated/Mysql_CSAR">
     <tosca:ImplementationArtifacts>
-      <tosca:ImplementationArtifact xmlns:ia="http://toscafy.github.io/artifacttypes" name="IA-install-Mysql-install" interfaceName="http://www.example.com/interfaces/lifecycle" operationName="install" artifactType="ia:DockerComposeArtifact" artifactRef="tns:Mysql-install"/>
+      <tosca:ImplementationArtifact xmlns:ia="http://toscafy.github.io/artifacttypes" name="IA-install-Mysql-install" interfaceName="http://www.example.com/interfaces/lifecycle" operationName="install" artifactType="ia:DockerComposeArtifact" artifactRef="csar:Mysql-install"/>
     </tosca:ImplementationArtifacts>
   </tosca:NodeTypeImplementation>
   <!-- ================== -->
@@ -114,9 +114,9 @@
   <!-- ============================ -->
   <tosca:ServiceTemplate id="Mysql_Topology" name="Mysql_Topology" targetNamespace="http://toscafy.github.io/generated/Mysql_CSAR">
     <tosca:TopologyTemplate>
-      <tosca:NodeTemplate name="Mysql_Node" minInstances="1" maxInstances="1" id="Mysql_Node" type="tns:Mysql">
+      <tosca:NodeTemplate name="Mysql_Node" minInstances="1" maxInstances="1" id="Mysql_Node" xmlns:nt="http://toscafy.github.io/generated/Mysql_CSAR" type="nt:Mysql">
         <tosca:Properties>
-          <tns:Mysql_Properties xmlns="http://toscafy.github.io/generated/Mysql_CSAR">
+          <csar:Mysql_Properties xmlns="http://toscafy.github.io/generated/Mysql_CSAR">
             <mysqlServiceName>default</mysqlServiceName>
             <mysqlServerRootPassword>ilikerandompasswords</mysqlServerRootPassword>
             <mysqlRemoveAnonymousUsers>true</mysqlRemoveAnonymousUsers>
@@ -124,7 +124,7 @@
             <mysqlPort>3306</mysqlPort>
             <mysqlServerPackageAction>install</mysqlServerPackageAction>
             <runList>recipe[mysql::client]</runList>
-          </tns:Mysql_Properties>
+          </csar:Mysql_Properties>
         </tosca:Properties>
       </tosca:NodeTemplate>
     </tosca:TopologyTemplate>

@@ -130,6 +130,37 @@ A `csarspec.json` file is structured as follows:
 }
 ```
 
+Some parts are optional:
+
+* `csar_name`
+* `node_types.(nodeTypeName).properties_schema`
+* `node_types.(nodeTypeName).properties_schema.(nodeTypePropertyName).default`
+* `node_types.(nodeTypeName).properties_schema.(nodeTypePropertyName).input`
+* `node_types.(nodeTypeName).properties_schema.(nodeTypePropertyName).output`
+* `node_types.(nodeTypeName).operations`
+* `node_types.(nodeTypeName).deployment_artifacts`
+* `artifacts.(artifactName).wrap`
+* `artifacts.(artifactName).properties`
+* `artifacts.(artifactName).references`
+* `topologies.(topologyName).nodes.(nodeName).properties`
+* `topologies.(topologyName).nodes.(nodeName).deployment_artifacts`
+* `topologies.(topologyName).relationships`
+
+Additional information can be added such as custom namespaces, descriptions, and interfaces:
+
+* `csar_namespace`
+* `csar_description`
+* `node_types.(nodeTypeName).description`
+* `node_types.(nodeTypeName).namespace`
+* `node_types.(nodeTypeName).properties_schema.(nodeTypePropertyName).description`
+* `node_types.(nodeTypeName).interfaces.(interfaceName).implementation_artifacts` = `[ (artifactName) ]`
+* `node_types.(nodeTypeName).interfaces.(interfaceName).operations.(operationName).implementation_artifacts` = `[ (artifactName) ]`
+* `artifacts.(artifactName).description`
+* `artifacts.(artifactName).namespace`
+* `topologies.(topologyName).description`
+* `topologies.(topologyName).namespace`
+
+CSARs do not necessarily include topologies, but could also consist of node types or artifacts only.
 Examples are located in the [test](test) folder.
 To inject XML snippets that define custom artifact types, relationship types, or XSD types, the following properties can optionally be added to the `csarspec.json` file:
 
