@@ -32,11 +32,11 @@
       </winery:properties>
       <winery:properties>
         <winery:key>mysqlServerDebianPassword</winery:key>
-        <winery:type>tns:unknown</winery:type>
+        <winery:type>xsd:anyType</winery:type>
       </winery:properties>
       <winery:properties>
         <winery:key>mysqlServerReplPassword</winery:key>
-        <winery:type>tns:unknown</winery:type>
+        <winery:type>xsd:anyType</winery:type>
       </winery:properties>
       <winery:properties>
         <winery:key>mysqlAllowRemoteRoot</winery:key>
@@ -48,7 +48,7 @@
       </winery:properties>
       <winery:properties>
         <winery:key>mysqlRootNetworkAcl</winery:key>
-        <winery:type>tns:unknown</winery:type>
+        <winery:type>xsd:anyType</winery:type>
       </winery:properties>
       <winery:properties>
         <winery:key>mysqlDataDir</winery:key>
@@ -60,7 +60,7 @@
       </winery:properties>
       <winery:properties>
         <winery:key>mysqlServerPackageVersion</winery:key>
-        <winery:type>tns:unknown</winery:type>
+        <winery:type>xsd:anyType</winery:type>
       </winery:properties>
       <winery:properties>
         <winery:key>mysqlServerPackageAction</winery:key>
@@ -78,14 +78,14 @@
           <tosca:InputParameters>
             <tosca:InputParameter name="mysqlServiceName" type="xsd:string"/> <!-- required="yes" -->
             <tosca:InputParameter name="mysqlServerRootPassword" type="xsd:string"/> <!-- required="yes" -->
-            <tosca:InputParameter name="mysqlServerDebianPassword" type="tns:unknown"/> <!-- required="yes" -->
-            <tosca:InputParameter name="mysqlServerReplPassword" type="tns:unknown"/> <!-- required="yes" -->
+            <tosca:InputParameter name="mysqlServerDebianPassword" type="xsd:anyType"/> <!-- required="yes" -->
+            <tosca:InputParameter name="mysqlServerReplPassword" type="xsd:anyType"/> <!-- required="yes" -->
             <tosca:InputParameter name="mysqlAllowRemoteRoot" type="xsd:boolean"/> <!-- required="yes" -->
             <tosca:InputParameter name="mysqlRemoveAnonymousUsers" type="xsd:boolean"/> <!-- required="yes" -->
-            <tosca:InputParameter name="mysqlRootNetworkAcl" type="tns:unknown"/> <!-- required="yes" -->
+            <tosca:InputParameter name="mysqlRootNetworkAcl" type="xsd:anyType"/> <!-- required="yes" -->
             <tosca:InputParameter name="mysqlDataDir" type="xsd:string"/> <!-- required="yes" -->
             <tosca:InputParameter name="mysqlPort" type="xsd:string"/> <!-- required="yes" -->
-            <tosca:InputParameter name="mysqlServerPackageVersion" type="tns:unknown"/> <!-- required="yes" -->
+            <tosca:InputParameter name="mysqlServerPackageVersion" type="xsd:anyType"/> <!-- required="yes" -->
             <tosca:InputParameter name="mysqlServerPackageAction" type="xsd:string"/> <!-- required="yes" -->
             <tosca:InputParameter name="runList" type="xsd:string"/> <!-- required="yes" -->
           </tosca:InputParameters>
