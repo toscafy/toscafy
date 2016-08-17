@@ -1,6 +1,6 @@
 {
   "name": "toscafy",
-  "version": "1.12.0",
+  "version": "1.12.1",
   "description": "Generate TOSCA CSARs from csarspec.json files",
   "main": "index.js",
   "scripts": {
