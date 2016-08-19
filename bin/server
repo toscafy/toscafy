@@ -20,6 +20,7 @@ const genPacker = require('../lib/GenPacker')();
 
 const appPort = process.env.PORT || 3000;
 const uploadsDir = process.env.UPLOADS_DIR || path.join(process.cwd(), 'uploads');
+const tempDir = process.env.TOSCAFY_TEMP_DIR || os.tmpdir();
 
 const upload = multer({ dest: uploadsDir });
 const app = express();
@@ -146,7 +147,7 @@ app.post('/commands/generate', uploadHandler, (req, res, next) => {
     function(done) {
       if (_.isEmpty(req.files.context)) return done();
 
-      context = path.join(os.tmpdir(), 'toscafy-context-' + id);
+      context = path.join(tempDir, 'toscafy-context-' + id);
 
       decompress(_.first(req.files.context).path, context, { strip: jobs[id].strip }).then(files => {
         if (_.isEmpty(files)) return done(new Error('context seems to be empty or it is not a valid tar file'));
