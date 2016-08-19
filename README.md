@@ -161,7 +161,7 @@ Additional information can be added such as custom namespaces, descriptions, and
 * `topologies.(topologyName).namespace`
 
 CSARs do not necessarily include topologies, but could also consist of node types or artifacts only.
-Examples are located in the [test](test) folder.
+Have a look at [csar-bricks](https://github.com/toscafy/csar-bricks) to see examples.
 To inject XML snippets that define custom artifact types, relationship types, or XSD types, the following properties can optionally be added to the `csarspec.json` file:
 
 ``` plaintext
