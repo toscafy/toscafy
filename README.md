@@ -225,6 +225,8 @@ Currently, the following built-in functions are provided:
 
 * `$toscafy.addFile` adds a local file to the generated CSAR as `filename`
 * `$toscafy.addDir` adds a local directory to the generated CSAR as `dirname`
+* `$toscafy.addDirAsZip` adds a local directory (zip compressed) to the generated CSAR as `filename`
+* `$toscafy.addDirAsTgz` adds a local directory (tar-gz compressed) to the generated CSAR as `filename`
 * `$toscafy.fetchAsFile` fetches a remote file and adds it to the generated CSAR as `filename`
 * `$toscafy.fetchAsText` fetches the content of a remote file and includes it in the CSAR spec as text
 * `$toscafy.fetchAsJson` fetches the content (or a specific `part` of it, expressed as [_.get path](https://lodash.com/docs#get)) of a remote file and includes it in the CSAR spec as JSON

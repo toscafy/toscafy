@@ -9,7 +9,8 @@
 
 
 
-* add built-in functions $toscafy.fetchAsDir,addDirAsZip,addDirAsTgz using decompress and archiver module
+* add built-in function $toscafy.fetchAsDir using decompress module
+* add 'normalize' command to validate and normalize CSAR spec
 * support node types reqs & caps to generate topology skeletons
 * support generating TOSCA YAML
 * support reading Markdown as 'literate CSAR specs'

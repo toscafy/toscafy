@@ -106,5 +106,8 @@
   "t8": { "$toscafy.embedDirAsTgzBase64": "some-dir" },
 
   "t9": { "$toscafy.addDir": "some-dir", "dirname": "another-dir" },
-  "t10": { "$toscafy.addFile": "some-script.sh", "filename": "another-script.sh" }
+  "t10": { "$toscafy.addFile": "some-script.sh", "filename": "another-script.sh" },
+
+  "t11": { "$toscafy.addDirAsZip": "some-dir", "filename": "some-dir-compressed.zip" },
+  "t12": { "$toscafy.addDirAsTgz": "some-dir", "filename": "some-dir-compressed.tgz" }
 }
