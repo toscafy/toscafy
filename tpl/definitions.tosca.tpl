@@ -49,8 +49,8 @@
       </winery:properties>
       <% }); %>
     </winery:PropertiesDefinition>
-    <% } %>
     <tosca:PropertiesDefinition element="csar:<%= ntName %>_Properties"/>
+    <% } %>
     <% if (!_.isEmpty(nt.interfaces)) { %>
     <tosca:Interfaces>
       <% _.forEach(nt.interfaces, function(iface, ifaceName) { %>

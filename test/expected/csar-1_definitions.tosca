@@ -63,7 +63,6 @@
     </tosca:ImplementationArtifacts>
   </tosca:NodeTypeImplementation>
   <tosca:NodeType name="MySql" targetNamespace="http://toscafy.github.io/generated/example">
-    <tosca:PropertiesDefinition element="csar:MySql_Properties"/>
     <tosca:Interfaces>
       <tosca:Interface name="http://www.example.com/interfaces/lifecycle">
         <tosca:Operation name="install">
@@ -82,7 +81,6 @@
     </tosca:DeploymentArtifacts>
   </tosca:NodeTypeImplementation>
   <tosca:NodeType name="AnotherNodeType" targetNamespace="http://toscafy.github.io/generated/example">
-    <tosca:PropertiesDefinition element="csar:AnotherNodeType_Properties"/>
   </tosca:NodeType>
   <tosca:NodeTypeImplementation name="AnotherNodeType_Impl" xmlns:nt="http://toscafy.github.io/generated/example" nodeType="nt:AnotherNodeType" targetNamespace="http://toscafy.github.io/generated/example">
     <tosca:DeploymentArtifacts>
