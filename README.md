@@ -229,10 +229,10 @@ Currently, the following built-in functions are provided:
 * `$toscafy.addDirAsTgz` adds a local directory (tar-gz compressed) to the generated CSAR as `filename`
 * `$toscafy.fetchAsFile` fetches a remote file and adds it to the generated CSAR as `filename`
 * `$toscafy.fetchAsText` fetches the content of a remote file and includes it in the CSAR spec as text
-* `$toscafy.fetchAsJson` fetches the content (or a specific `part` of it, expressed as [_.get path](https://lodash.com/docs#get)) of a remote file and includes it in the CSAR spec as JSON
+* `$toscafy.fetchAsJson` fetches the content (or a specific `part` of it, expressed as [_.get path](https://lodash.com/docs#get)) of a remote file and includes it in the CSAR spec as JSON; if `stringify` is `true`, JSON content is included as string
 * `$toscafy.fetchAsBase64` fetches the content of a remote file and includes it in the CSAR spec as Base64 string
 * `$toscafy.embedFileAsText` embeds the content of a local file into the CSAR spec as text
-* `$toscafy.embedFileAsJson` embeds the content (or a specific `part` of it, expressed as [_.get path](https://lodash.com/docs#get)) of a local file into the CSAR spec as JSON
+* `$toscafy.embedFileAsJson` embeds the content (or a specific `part` of it, expressed as [_.get path](https://lodash.com/docs#get)) of a local file into the CSAR spec as JSON; if `stringify` is `true`, JSON content is included as string
 * `$toscafy.embedFileAsBase64` embeds the content of a local file into the CSAR spec as Base64 string
 * `$toscafy.embedDirAsZipBase64` embeds the content of a local directory (zip compressed) into the CSAR spec as Base64 string
 * `$toscafy.embedDirAsTgzBase64` embeds the content of a local directory (tar-gz compressed) into the CSAR spec as Base64 string

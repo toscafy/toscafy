@@ -96,10 +96,12 @@
 
   "t1": { "$toscafy.fetchAsText": "https://gist.githubusercontent.com/jojow/0e5f6cea3d052999b662b60ad37f6d2f/raw/212ddd43f4372b95bb334aa94755412bc93cc117/opal-clus.metadata.json" },
   "t2": { "$toscafy.fetchAsJson": "https://gist.githubusercontent.com/jojow/0e5f6cea3d052999b662b60ad37f6d2f/raw/212ddd43f4372b95bb334aa94755412bc93cc117/opal-clus.metadata.json" },
+  "t2a": { "$toscafy.fetchAsJson": "https://gist.githubusercontent.com/jojow/0e5f6cea3d052999b662b60ad37f6d2f/raw/212ddd43f4372b95bb334aa94755412bc93cc117/opal-clus.metadata.json", "stringify": true },
   "t3": { "$toscafy.fetchAsBase64": "https://gist.githubusercontent.com/jojow/0e5f6cea3d052999b662b60ad37f6d2f/raw/212ddd43f4372b95bb334aa94755412bc93cc117/opal-clus.metadata.json" },
 
   "t4": { "$toscafy.embedFileAsText": "some-script.sh" },
   "t5": { "$toscafy.embedFileAsJson": "some-data.json", "part": "foo" },
+  "t5a": { "$toscafy.embedFileAsJson": "some-data.json", "stringify": true },
   "t6": { "$toscafy.embedFileAsBase64": "some-script.sh" },
 
   "t7": { "$toscafy.embedDirAsZipBase64": "some-dir" },
