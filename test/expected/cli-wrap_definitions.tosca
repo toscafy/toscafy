@@ -104,7 +104,7 @@
   <!-- ================== -->
   <tosca:ArtifactTemplate xmlns:at="http://toscafy.github.io/artifacttypes" xmlns="http://toscafy.github.io/artifacttypes" id="Mysql-install" type="at:DockerComposeArtifact">
     <tosca:Properties>
-      <ArtifactProperties><contextFile>any2api-generated-Mysql-install.tar.gz</contextFile><serviceName>mysql-install</serviceName><containerPort>3000</containerPort><endpointPath>/</endpointPath><endpointKind>rest</endpointKind></ArtifactProperties>
+      <ArtifactProperties><artifactName>Mysql-install</artifactName><contextFile>any2api-generated-Mysql-install.tar.gz</contextFile><serviceName>api</serviceName><containerPort>3000</containerPort><endpointKind>rest</endpointKind></ArtifactProperties>
     </tosca:Properties>
     <tosca:ArtifactReferences>
       <tosca:ArtifactReference reference="any2api-generated-Mysql-install.tar.gz"/>
