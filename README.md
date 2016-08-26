@@ -5,7 +5,7 @@
 Manually creating TOSCA Cloud Service Archives (CSARs) consisting of node types, artifact templates, and topology templates is not so much fun: several abstraction layers paired with a sophisticated XML syntax makes managing CSARs challenging to say the least.
 
 Therefore, **toscafy** aims to simplify this task without relying on a specific modeling tool.
-This enables *CSARs as code:* all parts and sources are stored in version-controlled source code repositories.
+This enables *CSARs as code:* all sources and dependencies are stored in version-controlled source code repositories.
 You just create a `csarspec.json` file (think of it as an automatically executable CSAR construction plan) that exactly consists of the parts required to generate a corresponding CSAR consisting of node types, artifacts, and/or topologies.
 By using **toscafy**, CSARs are no longer maintained manually as source artifacts, but they are generated based on the CSAR spec.
 Thus, it is enough to store the CSAR spec and all related files such as scripts inside a version-controlled repository.
@@ -23,7 +23,7 @@ Use npm to install **toscafy**:
     npm install toscafy -g
 
 Then you need to create a `csarspec.json` file.
-As a starting point, you could pick one from the [test](test) folder.
+As a starting point, you could pick one from the [csar-bricks](https://github.com/toscafy/csar-bricks) repository.
 Change into the directory in which the `csarspec.json` file is located.
 Run the following command to generate a CSAR as directory:
 
