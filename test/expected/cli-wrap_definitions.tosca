@@ -11,6 +11,7 @@
   <tosca:ArtifactType name="DockerArtifact" targetNamespace="http://toscafy.github.io/artifacttypes"/>
   <tosca:ArtifactType name="DockerComposeArtifact" targetNamespace="http://toscafy.github.io/artifacttypes"/>
   <tosca:ArtifactType name="any2api" targetNamespace="http://toscafy.github.io/artifacttypes"/>
+  <tosca:ArtifactType name="DevOpsBaseExport" targetNamespace="http://toscafy.github.io/artifacttypes"/>
   <!-- ================== -->
   <!-- Relationship Types -->
   <!-- ================== -->
